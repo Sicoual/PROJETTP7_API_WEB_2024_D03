@@ -1,6 +1,11 @@
 from sqlalchemy import Column, Integer, String, Date, Boolean, ForeignKey, Index, Numeric, Float, MetaData
-from sqlalchemy.orm import relationship
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship,declarative_base
 from database import Base, engine
+
+
+Base = declarative_base()
+db = SQLAlchemy(model_class=Base)
 
 class Client(Base):
 	__tablename__ = "client"
@@ -25,13 +30,13 @@ class Departement(Base):
 	nom_dept = Column(String(50), default=None)
 	ordre_aff_dept = Column(Integer, default=0)
 
-# class Commune(Base):
-# 	__tablename__ = "t_communes"
+class Commune(Base):
+	_tablename__ = "t_communes"
 
-# 	id = Column(Integer,primary_key=True)
-# 	dep = Column(Integer,ForeignKey('t_dept.code_dept'))
-# 	cp = Column(String(5), default=None)
-# 	ville = Column(String(50), default=None)
+	id = Column(Integer,primary_key=True)
+	dep = Column(Integer,ForeignKey('t_dept.code_dept'))
+	cp = Column(String(5), default=None)
+ville = Column(String(50), default=None)
 
 # 	__table_args__ = (Index('commune_index', "dep", "cp", "ville"),)
 
@@ -175,3 +180,4 @@ class Departement(Base):
 # 	role_id = Column(Integer, ForeignKey('t_role.codrole'))
 
 Base.metadata.create_all(engine)
+

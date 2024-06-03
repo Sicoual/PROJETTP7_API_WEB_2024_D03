@@ -2,7 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy import MetaData
 from sqlalchemy import Table, Column, Integer
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
-from os import environ
+import Client
+from database import Base
 # connexion a la base de donnée et déclaration de la base avec sql alchemy
 
 user = environ.get("DB_USER")
