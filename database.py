@@ -26,7 +26,4 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 class Base(DeclarativeBase):
     pass
 
-# creation d'une session
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
-
 db = SQLAlchemy(model_class=Base)

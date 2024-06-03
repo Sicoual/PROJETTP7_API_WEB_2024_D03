@@ -1,4 +1,3 @@
-from flask import Flask
 from sqlalchemy import (
 	Column,
 	Integer,
@@ -62,11 +61,3 @@ class Utilisateur(db.Model):
 	username = Column(String(50), default=None)
 	couleur_fond_utilisateur = Column(Integer, default=0)
 	date_insc_utilisateur = Column(Date)
-
-def init_models(app = Flask):
-	with app.app_context():
-		db.drop_all()
-		db.create_all()
-
-		db.session.add(Client(Nom="client1"))
-		db.session.commit()
