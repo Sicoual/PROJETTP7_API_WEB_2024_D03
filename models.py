@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from sqlalchemy import Column, Integer, String, Date, Boolean, ForeignKey, Index, Numeric, Float, MetaData
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship,declarative_base
@@ -8,28 +9,38 @@ Base = declarative_base()
 db = SQLAlchemy(model_class=Base)
 
 class Client(Base):
+=======
+from flask import Flask
+from sqlalchemy import (
+	Column,
+	Integer,
+	String,
+	Date,
+	ForeignKey,
+	Numeric,
+	Float,
+)
+from database import db
+
+class Client(db.Model):
+>>>>>>> e4651c04f522ef76d10aeb69c4fcbd76033b458e
 	__tablename__ = "client"
 
 	CodeCli = Column(Integer, primary_key=True)
-	Genre = Column(String(8), default=None)
 	Nom = Column(String(40), default=None, index=True)
 	Prenom = Column(String(30), default=None)
 	Adresse = Column(String(50), default=None)
-	adresse2cli = Column(String(50), default=None)
-	adresse3cli = Column(String(50), default=None)
-	villecli_id = Column(Integer,ForeignKey('t_communes.id'))
-	telcli = Column(String(10), default=None)
-	emailcli = Column(String(255), default=None)
-	portcli = Column(String(10), default=None)
-	newsletter = Column(Integer)
+	IdCodePostal = Column(Integer, default=None)
+	Genre = Column(String(8), default=None)
+	Email = Column(String(255), default=None)
 
-class Departement(Base):
-	__tablename__ = "t_dept"
+	def as_dict(self):
+		return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
 
-	code_dept = Column(String(2),primary_key=True)
-	nom_dept = Column(String(50), default=None)
-	ordre_aff_dept = Column(Integer, default=0)
+class Article(db.Model):
+	__tablename__ = "article"
 
+<<<<<<< HEAD
 class Commune(Base):
 	_tablename__ = "t_communes"
 
@@ -37,28 +48,50 @@ class Commune(Base):
 	dep = Column(Integer,ForeignKey('t_dept.code_dept'))
 	cp = Column(String(5), default=None)
 ville = Column(String(50), default=None)
+=======
+	CodeArticle = Column(Integer, primary_key=True)
+	Designation = Column(String(50), default=None)
+	Poids = Column(Numeric, default=0.0000)
+	NbreDePoints = Column(Integer, default=0)
 
-# 	__table_args__ = (Index('commune_index', "dep", "cp", "ville"),)
+class Commande(db.Model):
+	__tablename__ = "commande"
+>>>>>>> e4651c04f522ef76d10aeb69c4fcbd76033b458e
 
-# class Client(Base):
-# 	__tablename__ = "t_client"
+	NumCde = Column(Integer, primary_key=True)
+	CodeClient = Column(Integer, ForeignKey("client.CodeCli"))
+	DateCde = Column(Date)
+	MtTotal = Column(Float)
+	CodeOperateur = Column(Integer)
+	NSuivi = Column(String(50), default=None)
+	DateExpedition = Column(Date)
 
-# 	codcli = Column(Integer, primary_key=True)
-# 	genrecli = Column(String(8), default=None)
-# 	nomcli = Column(String(40), default=None, index=True)
-# 	prenomcli = Column(String(30), default=None)
-# 	adresse1cli = Column(String(50), default=None)
-# 	adresse2cli = Column(String(50), default=None)
-# 	adresse3cli = Column(String(50), default=None)
-# 	villecli_id = Column(Integer,ForeignKey('t_communes.id'))
-# 	telcli = Column(String(10), default=None)
-# 	emailcli = Column(String(255), default=None)
-# 	portcli = Column(String(10), default=None)
-# 	newsletter = Column(Integer)
+class CommandeArticle(db.Model):
+	__tablename__ = "commande_article"
 
+	NumCde = Column(Integer, ForeignKey("commande.NumCde"), primary_key=True)
+	CodeArticle = Column(Integer, ForeignKey("article.CodeArticle"), primary_key=True)
+	CodeEmballage = Column(Integer)
+	CodeModele = Column(Integer)
+	Poids = Column(Numeric, default=0.0000)
+	MontantAffranchissement = Column(Float, default=0.0000)
 
+class Utilisateur(db.Model):
+	__tablename__ = "utilisateur"
 
+	code_utilisateur = Column(Integer, primary_key=True)
+	nom_utilisateur = Column(String(50), default=None)
+	prenom_utilisateur = Column(String(50), default=None)
+	username = Column(String(50), default=None)
+	couleur_fond_utilisateur = Column(Integer, default=0)
+	date_insc_utilisateur = Column(Date)
 
+def init_models(app = Flask):
+	with app.app_context():
+		db.drop_all()
+		db.create_all()
+
+<<<<<<< HEAD
 # class Commande(Base):
 # 	__tablename__ = "t_entcde"
 
@@ -181,3 +214,7 @@ ville = Column(String(50), default=None)
 
 Base.metadata.create_all(engine)
 
+=======
+		db.session.add(Client(Nom="client1"))
+		db.session.commit()
+>>>>>>> e4651c04f522ef76d10aeb69c4fcbd76033b458e

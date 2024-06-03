@@ -1,6 +1,5 @@
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
-from sqlalchemy import MetaData
-from sqlalchemy import Table, Column, Integer
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 import Client
 from database import Base
@@ -30,3 +29,5 @@ class Base(DeclarativeBase):
 
 # creation d'une session
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
+db = SQLAlchemy(model_class=Base)
