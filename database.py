@@ -1,8 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
-import Client
-from database import Base
+from os import environ
 # connexion a la base de donnée et déclaration de la base avec sql alchemy
 
 user = environ.get("DB_USER")
