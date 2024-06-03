@@ -7,6 +7,21 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://username:password@host:
 db.init_app(app)
 
 
+
+
+
+app = Flask(__name__)
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URL
+
+db.init_app(app)
+init_models(app)
+
+@app.route("/clients")
+def clients_all():
+    clients = Client.query.all()
+    print(clients)
+    return jsonify(list(map(lambda el: el.as_dict(), clients)))
+
 with app.app_context():
     db.drop_all    
     db.create_all()
@@ -26,7 +41,9 @@ with app.app_context():
     )
     db.session.add(new_client)
     db.session.commit()
+print(f"Ajouté: {new_client.Nom} {new_client.Prenom}")
 
-    print(f"Ajouté: {new_client.Nom} {new_client.Prenom}")
+app.run()
+
 
 
