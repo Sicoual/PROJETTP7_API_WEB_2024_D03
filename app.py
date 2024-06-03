@@ -14,4 +14,8 @@ def clients_all():
     print(clients)
     return jsonify(list(map(lambda el: el.as_dict(), clients)))
 
+@app.route('/hello')
+def hello_world():
+    return 'Hello, World!'
+
 app.run()
