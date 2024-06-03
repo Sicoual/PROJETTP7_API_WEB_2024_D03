@@ -1,6 +1,5 @@
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
-from sqlalchemy import MetaData
-from sqlalchemy import Table, Column, Integer
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from os import environ
 # connexion a la base de donnée et déclaration de la base avec sql alchemy
@@ -29,3 +28,5 @@ class Base(DeclarativeBase):
 
 # creation d'une session
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
+db = SQLAlchemy(model_class=Base)

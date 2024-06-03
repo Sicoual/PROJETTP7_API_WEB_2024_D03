@@ -1,3 +1,4 @@
+from flask import Flask
 from sqlalchemy import (
 	Column,
 	Integer,
@@ -7,9 +8,9 @@ from sqlalchemy import (
 	Numeric,
 	Float,
 )
-from database import engine, Base
+from database import db
 
-class Client(Base):
+class Client(db.Model):
 	__tablename__ = "client"
 
 	CodeCli = Column(Integer, primary_key=True)
@@ -20,7 +21,10 @@ class Client(Base):
 	Genre = Column(String(8), default=None)
 	Email = Column(String(255), default=None)
 
-class Article(Base):
+	def as_dict(self):
+		return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
+
+class Article(db.Model):
 	__tablename__ = "article"
 
 	CodeArticle = Column(Integer, primary_key=True)
@@ -28,7 +32,7 @@ class Article(Base):
 	Poids = Column(Numeric, default=0.0000)
 	NbreDePoints = Column(Integer, default=0)
 
-class Commande(Base):
+class Commande(db.Model):
 	__tablename__ = "commande"
 
 	NumCde = Column(Integer, primary_key=True)
@@ -39,7 +43,7 @@ class Commande(Base):
 	NSuivi = Column(String(50), default=None)
 	DateExpedition = Column(Date)
 
-class CommandeArticle(Base):
+class CommandeArticle(db.Model):
 	__tablename__ = "commande_article"
 
 	NumCde = Column(Integer, ForeignKey("commande.NumCde"), primary_key=True)
@@ -49,7 +53,7 @@ class CommandeArticle(Base):
 	Poids = Column(Numeric, default=0.0000)
 	MontantAffranchissement = Column(Float, default=0.0000)
 
-class Utilisateur(Base):
+class Utilisateur(db.Model):
 	__tablename__ = "utilisateur"
 
 	code_utilisateur = Column(Integer, primary_key=True)
@@ -59,4 +63,10 @@ class Utilisateur(Base):
 	couleur_fond_utilisateur = Column(Integer, default=0)
 	date_insc_utilisateur = Column(Date)
 
-Base.metadata.create_all(engine)
+def init_models(app = Flask):
+	with app.app_context():
+		db.drop_all()
+		db.create_all()
+
+		db.session.add(Client(Nom="client1"))
+		db.session.commit()
