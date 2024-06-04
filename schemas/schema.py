@@ -1,5 +1,8 @@
 from flask_marshmallow import Marshmallow
-from models import Article, Client, Commande, Utilisateur
+from models.article import Article
+from models.client import Client
+from models.commande import Commande
+from models.utilisateur import Utilisateur
 
 ma = Marshmallow()
 

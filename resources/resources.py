@@ -1,6 +1,9 @@
 from flask_restful import Resource
-from models import Article, Client, Commande, Utilisateur
-from schemas import ArticleSchema, ClientSchema, CommandeSchema, UtilisateurSchema
+from models.article import Article
+from models.client import Client
+from models.commande import Commande
+from models.utilisateur import Utilisateur
+from schemas.schema import ArticleSchema, ClientSchema, CommandeSchema, UtilisateurSchema
 
 class ClientResource(Resource):
 
