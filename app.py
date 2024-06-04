@@ -1,10 +1,14 @@
 from flask import Flask
 from flask_restful import Api
 from database import db, SQLALCHEMY_DATABASE_URL
-from models import Article,Client,Commande,CommandeArticle,Utilisateur
+from models.article import Article 
+from models.client import Client 
+from models.utilisateur import Utilisateur 
+from models.commande import Commande 
+from models.commande_article import CommandeArticle
 from datetime import date
-from resources import ClientResource
-from schemas import ma
+from resources.client_resource import ClientResource
+from schemas.schema import ma
 
 
 app = Flask(__name__)
