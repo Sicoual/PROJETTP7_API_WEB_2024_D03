@@ -1,3 +1,4 @@
+from flask_restx import Namespace
 from database import db, SQLALCHEMY_DATABASE_URL
 from models.article import Article 
 from models.client import Client 
@@ -16,10 +17,21 @@ db.init_app(app)
 # Mashmallow
 ma.init_app(app)
 # API
-api.add_resource(ClientResource, "/clients", "/clients/<int:client_id>")
-api.add_resource(ArticleResource, "/articles", "/articles/<int:article_id>")
-api.add_resource(CommandeResource, "/commandes", "/commandes/<int:commande_id>")
-api.add_resource(UtilisateurResource, "/utilisateurs", "/utilisateurs/<int:utilisateur_id>")
+namespace = Namespace("Client", path="/")
+namespace.add_resource(ClientResource, "/clients", "/clients/<int:client_id>")
+api.add_namespace(namespace)
+
+namespace = Namespace("Article", path="/")
+namespace.add_resource(ArticleResource, "/articles", "/articles/<int:article_id>")
+api.add_namespace(namespace)
+
+namespace = Namespace("Commande", path="/")
+namespace.add_resource(CommandeResource, "/commandes", "/commandes/<int:commande_id>")
+api.add_namespace(namespace)
+
+namespace = Namespace("Utilisateur", path="/")
+namespace.add_resource(UtilisateurResource, "/utilisateurs", "/utilisateurs/<int:utilisateur_id>")
+api.add_namespace(namespace)
 
 
 with app.app_context():
