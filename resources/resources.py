@@ -3,7 +3,10 @@ from models.article import Article
 from models.client import Client
 from models.commande import Commande
 from models.utilisateur import Utilisateur
-from schemas.schema import ArticleSchema, ClientSchema, CommandeSchema, UtilisateurSchema
+from schemas.client_schema import ClientSchema
+from schemas.article_schema import ArticleSchema
+from schemas.commande_schema import CommandeSchema
+from schemas.utilisateur_schema import UtilisateurSchema
 
 class ClientResource(Resource):
 

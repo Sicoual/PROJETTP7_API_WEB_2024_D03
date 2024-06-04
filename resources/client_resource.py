@@ -35,6 +35,7 @@ class ClientResource(Resource):
             IdCodePostal=new_client_data["IdCodePostal"], 
             Genre=new_client_data["Genre"], 
             Email=new_client_data["Email"]
+            
         )
         
         db.session.add(new_client)
