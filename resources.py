@@ -10,11 +10,14 @@ class ClientResource(Resource):
     def get(self, client_id=None):
         if client_id:
             client = Client.query.get_or_404(client_id)
-            return self.client_schema.dump(client)
+            if client.status:
+                return self.client_schema.dump(client)
+            else:
+                return {'message': 'Client inactif'}
         else:
-            all_clients = Client.query.all()
-            return self.client_list_schema.dump(all_clients)
-
+            all_clients = Client.query.filter_by(status=True).all()  # Filter active clients
+            return self.client_list_schema.dump(all_clients)    
+    
 class ArticleResource(Resource):
 
     article_schema = ArticleSchema()

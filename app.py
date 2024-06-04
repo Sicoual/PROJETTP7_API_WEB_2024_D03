@@ -35,6 +35,7 @@ with app.app_context():
             IdCodePostal=75000,
             Genre="Homme",
             Email="jean.dupont@example.com"
+
         )
 
         article1 = Article(

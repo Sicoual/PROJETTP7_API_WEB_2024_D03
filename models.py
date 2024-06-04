@@ -6,6 +6,7 @@ from sqlalchemy import (
 	ForeignKey,
 	Numeric,
 	Float,
+	Boolean
 )
 from database import db
 
@@ -19,6 +20,7 @@ class Client(db.Model):
 	IdCodePostal = Column(Integer, default=None)
 	Genre = Column(String(8), default=None)
 	Email = Column(String(255), default=None)
+	status = Column(Boolean, default=True)
 
 	def as_dict(self):
 		return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
@@ -30,6 +32,7 @@ class Article(db.Model):
 	Designation = Column(String(50), default=None)
 	Poids = Column(Float, default=0.0000)
 	NbreDePoints = Column(Integer, default=0)
+	status = Column(Boolean, default=True)
 
 class Commande(db.Model):
 	__tablename__ = "commande"
@@ -41,6 +44,7 @@ class Commande(db.Model):
 	CodeOperateur = Column(Integer)
 	NSuivi = Column(String(50), default=None)
 	DateExpedition = Column(Date)
+	status = Column(Boolean, default=True)
 
 class CommandeArticle(db.Model):
 	__tablename__ = "commande_article"
@@ -51,6 +55,7 @@ class CommandeArticle(db.Model):
 	CodeModele = Column(Integer)
 	Poids = Column(Numeric, default=0.0000)
 	MontantAffranchissement = Column(Float, default=0.0000)
+	status = Column(Boolean, default=True)
 
 class Utilisateur(db.Model):
 	__tablename__ = "utilisateur"
@@ -61,3 +66,4 @@ class Utilisateur(db.Model):
 	username = Column(String(50), default=None)
 	couleur_fond_utilisateur = Column(Integer, default=0)
 	date_insc_utilisateur = Column(Date)
+	status = Column(Boolean, default=True)
