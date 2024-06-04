@@ -1,4 +1,5 @@
 from sqlalchemy import (
+	Boolean,
 	Column,
 	Integer,
 	String,
@@ -15,4 +16,5 @@ class Client(db.Model):
 	IdCodePostal = Column(Integer, default=None)
 	Genre = Column(String(8), default=None)
 	Email = Column(String(255), default=None)
+	Statut=Column(Boolean,default=True)
 

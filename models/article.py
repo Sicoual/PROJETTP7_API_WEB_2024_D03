@@ -1,4 +1,5 @@
 from sqlalchemy import (
+	Boolean,
 	Column,
 	Integer,
 	String,
@@ -14,3 +15,5 @@ class Article(db.Model):
 	Designation = Column(String(50), default=None)
 	Poids = Column(Numeric, default=0.0000)
 	NbreDePoints = Column(Integer, default=0)
+	Statut=Column(Boolean,default=True)
+ 

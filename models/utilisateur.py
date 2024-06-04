@@ -1,4 +1,5 @@
 from sqlalchemy import (
+	Boolean,
 	Column,
 	Integer,
 	String,
@@ -16,5 +17,7 @@ class Utilisateur(db.Model):
 	username = Column(String(50), default=None)
 	couleur_fond_utilisateur = Column(Integer, default=0)
 	date_insc_utilisateur = Column(Date)
+	Statut=Column(Boolean,default=True)
+ 
 
 

@@ -1,4 +1,5 @@
 from sqlalchemy import (
+	Boolean,
 	Column,
 	Integer,
 	String,
@@ -20,4 +21,5 @@ class CommandeArticle(db.Model):
 	CodeModele = Column(Integer)
 	Poids = Column(Numeric, default=0.0000)
 	MontantAffranchissement = Column(Float, default=0.0000)
+	Statut=Column(Boolean,default=True)
 
