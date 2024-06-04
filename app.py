@@ -3,6 +3,7 @@ from database import db, SQLALCHEMY_DATABASE_URL
 from models import init_models
 from flasgger import Swagger
 from swagger_docs import swagger_template
+from config import TestConfig
 
 # fonctions get_
 from endpoints.clients import get_clients
@@ -12,7 +13,14 @@ from endpoints.commande_articles import get_commande_articles
 from endpoints.utilisateurs import get_utilisateurs
 
 app = Flask(__name__)
+
+#Tests
+app.config.from_object(TestConfig)
+    
+#BDD
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URL
+
+#Swagger
 app.config['SWAGGER'] = {
     'title': 'Mon API',
     'uiversion': 3
@@ -20,9 +28,11 @@ app.config['SWAGGER'] = {
 
 swagger = Swagger(app, template=swagger_template) 
 
+#init
 db.init_app(app)
 init_models(app)
 
+#endpoints
 @app.route('/hello')
 def hello_world():
     return 'Hello, World!'
@@ -48,6 +58,7 @@ def commande_articles_route():
 def utilisateurs_route():
     return get_utilisateurs()
 
+#main app.run()
 if __name__ == "__main__":
     with app.app_context():
         init_models(app)
