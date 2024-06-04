@@ -1,4 +1,5 @@
 from sqlalchemy import (
+	Boolean,
 	Column,
 	Integer,
 	String,
@@ -19,3 +20,5 @@ class Commande(db.Model):
 	CodeOperateur = Column(Integer)
 	NSuivi = Column(String(50), default=None)
 	DateExpedition = Column(Date)
+	Statut=Column(Boolean,default=True)
+

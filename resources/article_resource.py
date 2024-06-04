@@ -1,7 +1,6 @@
 from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
-from models import article
 from models.article import Article,db
 from schemas.article_schema import ArticleSchema
 

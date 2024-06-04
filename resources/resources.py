@@ -1,39 +1,6 @@
 from flask_restful import Resource
-from models.client import Client
-from models.commande import Commande
 from models.utilisateur import Utilisateur
-from schemas.client_schema import ClientSchema
-from schemas.commande_schema import CommandeSchema
 from schemas.utilisateur_schema import UtilisateurSchema
-
-class ClientResource(Resource):
-
-    client_schema = ClientSchema()
-    client_list_schema = ClientSchema(many=True) # Retourne plusieurs schemas
-
-    def get(self, client_id=None):
-        if client_id:
-            client = Client.query.get_or_404(client_id)
-            if client.status:
-                return self.client_schema.dump(client)
-            else:
-                return {'message': 'Client inactif'}
-        else:
-            all_clients = Client.query.filter_by(status=True).all()  # Filter active clients
-            return self.client_list_schema.dump(all_clients)    
-
-class CommandeResource(Resource):
-
-    commande_schema = CommandeSchema()
-    commande_list_schema = CommandeSchema(many=True) # Retourne plusieurs schemas
-
-    def get(self, commande_id=None):
-        if commande_id:
-            commande = Commande.query.get_or_404(commande_id)
-            return self.commande_schema.dump(commande)
-        else:
-            all_commandes = Commande.query.all()
-            return self.commande_list_schema.dump(all_commandes)
 
 class UtilisateurResource(Resource):
 
