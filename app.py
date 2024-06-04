@@ -1,9 +1,9 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_restful import Api
 from models import Article, Client, Commande, CommandeArticle, Utilisateur
 from database import db, SQLALCHEMY_DATABASE_URL
 from datetime import date
-from resources import ClientResource
+from resources import ArticleResource, ClientResource, CommandeResource, UtilisateurResource
 from schemas import ma
 
 app = Flask(__name__)
@@ -18,6 +18,9 @@ ma.init_app(app)
 # API
 api = Api(app)
 api.add_resource(ClientResource, "/clients", "/clients/<int:client_id>")
+api.add_resource(ArticleResource, "/articles", "/articles/<int:article_id>")
+api.add_resource(CommandeResource, "/commandes", "/commandes/<int:commande_id>")
+api.add_resource(UtilisateurResource, "/utilisateurs", "/utilisateurs/<int:utilisateur_id>")
 
 with app.app_context():
     try:

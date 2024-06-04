@@ -1,6 +1,6 @@
 from flask_restful import Resource
-from models import Client
-from schemas import ClientSchema
+from models import Article, Client, Commande, Utilisateur
+from schemas import ArticleSchema, ClientSchema, CommandeSchema, UtilisateurSchema
 
 class ClientResource(Resource):
 
@@ -14,3 +14,42 @@ class ClientResource(Resource):
         else:
             all_clients = Client.query.all()
             return self.client_list_schema.dump(all_clients)
+
+class ArticleResource(Resource):
+
+    article_schema = ArticleSchema()
+    article_list_schema = ArticleSchema(many=True) # Retourne plusieurs schemas
+
+    def get(self, article_id=None):
+        if article_id:
+            article = Article.query.get_or_404(article_id)
+            return self.article_schema.dump(article)
+        else:
+            all_articles = Article.query.all()
+            return self.article_list_schema.dump(all_articles)
+
+class CommandeResource(Resource):
+
+    commande_schema = CommandeSchema()
+    commande_list_schema = CommandeSchema(many=True) # Retourne plusieurs schemas
+
+    def get(self, commande_id=None):
+        if commande_id:
+            commande = Commande.query.get_or_404(commande_id)
+            return self.commande_schema.dump(commande)
+        else:
+            all_commandes = Commande.query.all()
+            return self.commande_list_schema.dump(all_commandes)
+
+class UtilisateurResource(Resource):
+
+    utilisateur_schema = UtilisateurSchema()
+    utilisateur_list_schema = UtilisateurSchema(many=True) # Retourne plusieurs schemas
+
+    def get(self, utilisateur_id=None):
+        if utilisateur_id:
+            utilisateur = Utilisateur.query.get_or_404(utilisateur_id)
+            return self.utilisateur_schema.dump(utilisateur)
+        else:
+            all_utilisateurs = Utilisateur.query.all()
+            return self.utilisateur_list_schema.dump(all_utilisateurs)
