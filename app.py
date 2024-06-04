@@ -1,5 +1,3 @@
-from flask import Flask
-from flask_restful import Api
 from database import db, SQLALCHEMY_DATABASE_URL
 from models.article import Article 
 from models.client import Client 
@@ -10,17 +8,15 @@ from datetime import date
 from resources.resources import ArticleResource, CommandeResource, UtilisateurResource
 from resources.client_resource import ClientResource
 from schemas.schema import ma
+from globals import app, api
 
-
-app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URL
 # BDD
 db.init_app(app)
 # Mashmallow
 ma.init_app(app)
 # API
-api=Api(app)
-api.add_resource(ClientResource,'/clients','/clients/<int:client_id>')
+api.add_resource(ClientResource, "/clients", "/clients/<int:client_id>")
 api.add_resource(ArticleResource, "/articles", "/articles/<int:article_id>")
 api.add_resource(CommandeResource, "/commandes", "/commandes/<int:commande_id>")
 api.add_resource(UtilisateurResource, "/utilisateurs", "/utilisateurs/<int:utilisateur_id>")

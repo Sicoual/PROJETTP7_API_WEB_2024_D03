@@ -1,12 +1,14 @@
-from flask_restful import Resource
+from flask import Flask
+from flask_restx import Api, Resource
 from models.article import Article
 from models.client import Client
 from models.commande import Commande
 from models.utilisateur import Utilisateur
 from schemas.schema import ArticleSchema, ClientSchema, CommandeSchema, UtilisateurSchema
+from globals import api
 
+@api.doc(params={'id': 'An ID'})
 class ClientResource(Resource):
-
     client_schema = ClientSchema()
     client_list_schema = ClientSchema(many=True) # Retourne plusieurs schemas
 

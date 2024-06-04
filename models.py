@@ -20,9 +20,6 @@ class Client(db.Model):
 	Genre = Column(String(8), default=None)
 	Email = Column(String(255), default=None)
 
-	def as_dict(self):
-		return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
-
 class Article(db.Model):
 	__tablename__ = "article"
 
