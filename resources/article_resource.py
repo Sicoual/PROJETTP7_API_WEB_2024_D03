@@ -1,8 +1,17 @@
 from flask import request
-from flask_restx import Resource
+from flask_restx import Resource, fields
 from marshmallow import ValidationError
-from models.article import Article,db
+from database import db
+from models.article import Article
 from schemas.article_schema import ArticleSchema
+from globals import api
+
+article_model = api.model("Article", {
+    "CodeCli": fields.Integer(description="ID de l'article"),
+    "Designation": fields.String(description="Libellé de l'article", example="Stylo", required=True),
+    "Poids": fields.String(description="Poids unitaire de l'article en kg", example="0.02"),
+    "NbreDePoints": fields.String(description="Nombre de points auquel équivaut l'article", example="10"),
+})
 
 class ArticleResource(Resource):
     article_schema = ArticleSchema()
@@ -60,6 +69,7 @@ class ArticleListResource(Resource):
         return self.article_schema.dump(all_articles, many=True)
 
     # POST
+    @api.doc(model=article_model)
     def post(self):
         try:
             new_articles_data = self.article_schema.load(request.json)

@@ -1,8 +1,19 @@
 from flask import request
-from flask_restx import Resource
+from flask_restx import Resource, fields
 from marshmallow import ValidationError
-from models.utilisateur import Utilisateur,db
+from models.utilisateur import Utilisateur
+from database import db
 from schemas.utilisateur_schema import UtilisateurSchema
+from globals import api
+
+utilisateur_model = api.model("Utilisateur", {
+    "code_utilisateur": fields.Integer(description="ID de l'utilisateur"),
+    "nom_utilisateur": fields.Integer(description="Nom de famille de l'utilisateur", required=True),
+    "prenom_utilisateur": fields.Date(description="Prénom de l'utilisateur", required=True),
+    "username": fields.Float(description="Pseudonyme de l'utilisateur", required=True),
+    "couleur_fond_utilisateur": fields.Integer(description=""),
+    "date_insc_utilisateur": fields.Integer(description="Date d'inscription de l'utilisateur"),
+})
 
 class UtilisateurResource(Resource):
     utilisateur_schema = UtilisateurSchema()
@@ -61,6 +72,7 @@ class UtilisateurListResource(Resource):
         return self.utilisateur_schema.dump(all_utilisateurs, many=True)
 
     # POST
+    @api.doc(model=utilisateur_model)
     def post(self):
         try:
             new_utilisateur_data=self.utilisateur_schema.load(request.json)

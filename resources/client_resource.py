@@ -7,10 +7,11 @@ from models.client import Client
 from globals import api
 
 client_model = api.model("Client", {
-    'Nom': fields.String(description='Nom du client', example="Dupont", required=True),
+    "CodeCli": fields.Integer(description="ID du client"),
+    "Nom": fields.String(description="Nom du client", example="Dupont", required=True),
     "Prenom": fields.String(description="Prénom du client", example="Jean", required=True),
-    'Email': fields.String(description="Adresse mail du client", example="jean.dupont@example.com", required=True),
-    'Adresse': fields.String(description='Adresse principale du client', example="123 Rue de Paris"),
+    "Email": fields.String(description="Adresse mail du client", example="jean.dupont@example.com", required=True),
+    "Adresse": fields.String(description="Adresse principale du client", example="123 Rue de Paris"),
     "IdCodePostal": fields.Integer(description="Code Postal de l'adresse du client", example="75000"),
     "Genre": fields.String(description="Homme/Femme", enum=["Homme", "Femme"]),
 })
@@ -19,20 +20,21 @@ class ClientResource(Resource):
     client_schema = ClientSchema()
 
     # GET
-    @api.doc(params={'client_id': 'Code du client à afficher'})
+    @api.doc(params={"client_id": "Code du client à afficher"})
     def get(self, client_id):
         client = Client.query.get_or_404(client_id)
         return self.client_schema.dump(client)
 
     # PUT
-    def put(self,client_id):
+    @api.doc(params={"client_id": "Code du client à modifier"})
+    def put(self, client_id):
         try:
             new_client_data=self.client_schema.load(request.json)
         except ValidationError as err:
             return {"message": "Validation Error", "errors": err.messages}, 400
-        
+
         client=Client.query.get_or_404(client_id)
-        
+
         for key, value in new_client_data.items():
             if value is not None:
                 setattr(client,key,value)
@@ -41,7 +43,7 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     #PATCH
-    @api.doc(params={'client_id': 'Code du client à modifier'})
+    @api.doc(params={"client_id": "Code du client à modifier"})
     def patch(self,client_id):
         try:
             new_client_data = self.client_schema.load(request.json, partial=True)
@@ -58,7 +60,7 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     # DELETE
-    @api.doc(params={'client_id': 'Code du client à supprimer'})
+    @api.doc(params={"client_id": "Code du client à supprimer"})
     def delete(self,client_id):
         client=Client.query.get_or_404(client_id)
         client.Statut=False

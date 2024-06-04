@@ -1,8 +1,20 @@
 from flask import request
-from flask_restx import Resource
+from flask_restx import Resource, fields
 from marshmallow import ValidationError
-from models.commande import Commande,db
+from database import db
+from models.commande import Commande
 from schemas.commande_schema import CommandeSchema
+from globals import api
+
+commande_model = api.model("Commande", {
+    "NumCde": fields.Integer(description="ID de la commande"),
+    "CodeClient": fields.Integer(description="ID du client associé à la commande", required=True),
+    "DateCde": fields.Date(description="Date de création de la commande", required=True),
+    "MtTotal": fields.Float(description="Montant total de la commande en EUR", required=True),
+    "CodeOperateur": fields.Integer(description="Code de l'opérateur associé à la commande"),
+    "NSuivi": fields.Integer(description="Numéro de suivi de la commande"),
+    "DateExpedition": fields.Date(description="Date d'expédition de la commande"),
+})
 
 class CommandeResource(Resource):
     commande_schema = CommandeSchema()
@@ -22,6 +34,7 @@ class CommandeListResource(Resource):
         return self.commande_schema.dump(all_commandes, many=True)
 
     # POST
+    @api.doc(model=commande_model)
     def post(self):
         try:
             new_commande_data = self.commande_schema.load(request.json)
