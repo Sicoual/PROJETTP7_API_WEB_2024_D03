@@ -1,4 +1,3 @@
-from flask import Flask
 from sqlalchemy import (
 	Column,
 	Integer,
@@ -29,7 +28,7 @@ class Article(db.Model):
 
 	CodeArticle = Column(Integer, primary_key=True)
 	Designation = Column(String(50), default=None)
-	Poids = Column(Numeric, default=0.0000)
+	Poids = Column(Float, default=0.0000)
 	NbreDePoints = Column(Integer, default=0)
 
 class Commande(db.Model):
@@ -62,6 +61,7 @@ class Utilisateur(db.Model):
 	username = Column(String(50), default=None)
 	couleur_fond_utilisateur = Column(Integer, default=0)
 	date_insc_utilisateur = Column(Date)
+
 
 def init_models(app = Flask):
 	with app.app_context():
