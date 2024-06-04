@@ -1,10 +1,9 @@
 from flask import request
-from flask_restful import Resource
+from flask_restx import Resource
 from marshmallow import ValidationError
 from models.article import Article,db
 from schemas.article_schema import ArticleSchema
 
-    
 class ArticleResource(Resource):
 
     article_schema = ArticleSchema()
@@ -73,4 +72,3 @@ class ArticleResource(Resource):
         article.Statut=False
         db.session.commit()
         return self.article_schema.dump(article)
-

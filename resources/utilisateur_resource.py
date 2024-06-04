@@ -1,10 +1,8 @@
 from flask import request
-from flask_restful import Resource
+from flask_restx import Resource
 from marshmallow import ValidationError
 from models.utilisateur import Utilisateur,db
 from schemas.utilisateur_schema import UtilisateurSchema
-
-
 
 class UtilisateurResource(Resource):
     
@@ -34,10 +32,9 @@ class UtilisateurResource(Resource):
             username=new_utilisateur_data["username"], 
             couleur_fond_utilisateur=new_utilisateur_data["couleur_fond_utilisateur"], 
             date_insc_utilisateur=new_utilisateur_data["date_insc_utilisateur"], 
-           
+
         )
-        
-   
+
         db.session.add(new_utilisateur)
         db.session.commit()
         return self.utilisateur_schema.dump(new_utilisateur)
@@ -80,7 +77,3 @@ class UtilisateurResource(Resource):
         utilisateur.Statut=False
         db.session.commit()
         return self.utilisateur_schema.dump(utilisateur)
-  
-
-    
-    

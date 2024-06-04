@@ -1,4 +1,4 @@
-from schemas.schema import ma
+from globals import ma
 from models.utilisateur import Utilisateur
 
 class UtilisateurSchema(ma.SQLAlchemyAutoSchema):

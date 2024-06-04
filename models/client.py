@@ -17,4 +17,3 @@ class Client(db.Model):
 	Genre = Column(String(8), default=None)
 	Email = Column(String(255), default=None)
 	Statut=Column(Boolean,default=True)
-

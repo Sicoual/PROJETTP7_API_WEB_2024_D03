@@ -1,4 +1,4 @@
-from schemas.schema import ma
+from globals import ma
 from models.commande import Commande
 
 class CommandeSchema(ma.SQLAlchemyAutoSchema):

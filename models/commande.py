@@ -9,7 +9,6 @@ from sqlalchemy import (
 )
 from database import db
 
-
 class Commande(db.Model):
 	__tablename__ = "commande"
 
