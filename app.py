@@ -1,6 +1,8 @@
 from flask import Flask
 from database import db, SQLALCHEMY_DATABASE_URL
 from models import init_models
+from flasgger import Swagger
+from swagger_docs import swagger_template
 
 # fonctions get_
 from endpoints.clients import get_clients
@@ -11,6 +13,12 @@ from endpoints.utilisateurs import get_utilisateurs
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URL
+app.config['SWAGGER'] = {
+    'title': 'Mon API',
+    'uiversion': 3
+}
+
+swagger = Swagger(app, template=swagger_template) 
 
 db.init_app(app)
 init_models(app)
