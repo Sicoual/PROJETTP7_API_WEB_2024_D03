@@ -7,8 +7,9 @@ from models.utilisateur import Utilisateur
 from models.commande import Commande 
 from models.commande_article import CommandeArticle
 from datetime import date
-from resources.resources import ArticleResource, CommandeResource, UtilisateurResource
+from resources.resources import ArticleResource, CommandeResource
 from resources.client_resource import ClientResource
+from resources.utilisateur_resource import UtilisateurResource
 from schemas.schema import ma
 
 
