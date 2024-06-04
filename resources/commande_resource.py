@@ -5,21 +5,25 @@ from models.commande import Commande,db
 from schemas.commande_schema import CommandeSchema
 
 class CommandeResource(Resource):
-
     commande_schema = CommandeSchema()
-    commande_list_schema = CommandeSchema(many=True) # Retourne plusieurs schemas
+
     # GET
-    def get(self, commande_id=None):
-        if commande_id:
-            commande = Commande.query.get_or_404(commande_id)
-            return self.commande_schema.dump(commande)
-        else:
-            all_commandes = Commande.query.all()
-            return self.commande_list_schema.dump(all_commandes)
+    def get(self, commande_id):
+        commande = Commande.query.get_or_404(commande_id)
+        return self.commande_schema.dump(commande)
+
+
+class CommandeListResource(Resource):
+    commande_schema = CommandeSchema()
+
+    # GET
+    def get(self):
+        all_commandes = Commande.query.all()
+        return self.commande_schema.dump(all_commandes, many=True)
+
     # POST
     def post(self):
         try:
-            print(request.json)
             new_commande_data = self.commande_schema.load(request.json)
         except ValidationError as err:
             return {"message": "Validation Error", "errors": err.messages}, 400
