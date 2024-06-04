@@ -7,6 +7,7 @@ from models.utilisateur import Utilisateur
 from models.commande import Commande 
 from models.commande_article import CommandeArticle
 from datetime import date
+from resources.resources import ArticleResource, CommandeResource, UtilisateurResource
 from resources.client_resource import ClientResource
 from schemas.schema import ma
 
@@ -20,6 +21,10 @@ ma.init_app(app)
 # API
 api=Api(app)
 api.add_resource(ClientResource,'/clients','/clients/<int:client_id>')
+api.add_resource(ArticleResource, "/articles", "/articles/<int:article_id>")
+api.add_resource(CommandeResource, "/commandes", "/commandes/<int:commande_id>")
+api.add_resource(UtilisateurResource, "/utilisateurs", "/utilisateurs/<int:utilisateur_id>")
+
 
 with app.app_context():
     try:
