@@ -21,4 +21,3 @@ class Commande(db.Model):
 	NSuivi = Column(String(50), default=None)
 	DateExpedition = Column(Date)
 	Statut=Column(Boolean,default=True)
-

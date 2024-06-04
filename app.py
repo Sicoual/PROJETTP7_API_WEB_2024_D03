@@ -7,10 +7,10 @@ from models.utilisateur import Utilisateur
 from models.commande import Commande 
 from models.commande_article import CommandeArticle
 from datetime import date
-from resources.resources import UtilisateurResource
 from resources.commande_resource import CommandeResource
 from resources.article_resource import ArticleResource
 from resources.client_resource import ClientResource
+from resources.utilisateur_resource import UtilisateurResource
 from schemas.schema import ma
 
 
