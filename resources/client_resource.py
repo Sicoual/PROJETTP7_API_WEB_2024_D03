@@ -76,9 +76,9 @@ class ClientResource(Resource):
     # DELETE
     def delete(self,client_id):
         client=Client.query.get_or_404(client_id)
-        db.session.delete(client)
+        client.Statut=False
         db.session.commit()
-        return '',204
+        return self.client_schema.dump(client)
 
     
     
