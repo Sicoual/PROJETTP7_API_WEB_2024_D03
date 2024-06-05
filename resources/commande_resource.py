@@ -1,26 +1,42 @@
 from flask import request
-from flask_restful import Resource
+from flask_restx import Resource, fields
 from marshmallow import ValidationError
-from models.commande import Commande,db
+from database import db
+from models.commande import Commande
 from schemas.commande_schema import CommandeSchema
+from globals import api
 
+commande_model = api.model("Commande", {
+    "NumCde": fields.Integer(description="ID de la commande"),
+    "CodeClient": fields.Integer(description="ID du client associé à la commande", required=True),
+    "DateCde": fields.Date(description="Date de création de la commande", required=True),
+    "MtTotal": fields.Float(description="Montant total de la commande en EUR", required=True),
+    "CodeOperateur": fields.Integer(description="Code de l'opérateur associé à la commande"),
+    "NSuivi": fields.Integer(description="Numéro de suivi de la commande"),
+    "DateExpedition": fields.Date(description="Date d'expédition de la commande"),
+})
 
 class CommandeResource(Resource):
-
     commande_schema = CommandeSchema()
-    commande_list_schema = CommandeSchema(many=True) # Retourne plusieurs schemas
+
     # GET
-    def get(self, commande_id=None):
-        if commande_id:
-            commande = Commande.query.get_or_404(commande_id)
-            return self.commande_schema.dump(commande)
-        else:
-            all_commandes = Commande.query.all()
-            return self.commande_list_schema.dump(all_commandes)
+    def get(self, commande_id):
+        commande = Commande.query.get_or_404(commande_id)
+        return self.commande_schema.dump(commande)
+
+
+class CommandeListResource(Resource):
+    commande_schema = CommandeSchema()
+
+    # GET
+    def get(self):
+        all_commandes = Commande.query.all()
+        return self.commande_schema.dump(all_commandes, many=True)
+
     # POST
+    @api.doc(model=commande_model)
     def post(self):
         try:
-            print(request.json)
             new_commande_data = self.commande_schema.load(request.json)
         except ValidationError as err:
             return {"message": "Validation Error", "errors": err.messages}, 400

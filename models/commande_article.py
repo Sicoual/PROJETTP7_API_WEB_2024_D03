@@ -8,8 +8,6 @@ from sqlalchemy import (
 )
 from database import db
 
-
-
 class CommandeArticle(db.Model):
 	__tablename__ = "commande_article"
 
@@ -20,4 +18,3 @@ class CommandeArticle(db.Model):
 	Poids = Column(Numeric, default=0.0000)
 	MontantAffranchissement = Column(Float, default=0.0000)
 	Statut=Column(Boolean,default=True)
-
