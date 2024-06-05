@@ -6,17 +6,20 @@ from schemas.client_schema import ClientSchema
 from models.client import Client
 from globals import api
 
-client_model = api.model("Client", {
-    "CodeCli": fields.Integer(description="ID du client"),
+model_data = {
+    "CodeCli": fields.Integer(description="ID du client", example=1),
     "Nom": fields.String(description="Nom du client", example="Dupont", required=True),
     "Prenom": fields.String(description="Prénom du client", example="Jean", required=True),
     "Email": fields.String(description="Adresse mail du client", example="jean.dupont@example.com", required=True),
     "Adresse": fields.String(description="Adresse principale du client", example="123 Rue de Paris"),
     "IdCodePostal": fields.Integer(description="Code Postal de l'adresse du client", example="75000"),
     "Genre": fields.String(description="Homme/Femme", enum=["Homme", "Femme"]),
-})
+}
 
-@api.doc(params={"client_id": "ID du client concerné"})
+client_model = api.model("Client", model_data)
+client_payload = api.model("Client Payload", {k: v for k, v in model_data.items() if k not in ["CodeCli"]})
+
+@api.doc(params={"client_id": "ID du client concerné"}, model=client_model)
 class ClientResource(Resource):
     client_schema = ClientSchema()
 
@@ -26,6 +29,7 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     # PUT
+    @api.expect(client_payload)
     def put(self, client_id):
         try:
             new_client_data=self.client_schema.load(request.json)
@@ -42,11 +46,12 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     #PATCH
+    @api.expect(client_payload)
     def patch(self,client_id):
         try:
             new_client_data = self.client_schema.load(request.json, partial=True)
         except ValidationError as err:
-            return {"message":"Validation Error", "errors":err.messages},400
+            return {"message":"Validation Error", "errors":err.messages}, 400
 
         client=Client.query.get_or_404(client_id)
 
@@ -75,6 +80,7 @@ class ClientListResource(Resource):
         return self.client_schema.dump(all_clients, many=True)
 
     # POST
+    @api.expect(client_payload)
     def post(self):
         try:
             new_client_data = self.client_schema.load(request.json)

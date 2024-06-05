@@ -7,14 +7,14 @@ from schemas.article_schema import ArticleSchema
 from globals import api
 
 model_data = {
-    "CodeArticle": fields.Integer(description="ID de l'article"),
+    "CodeArticle": fields.Integer(description="ID de l'article", example=1),
     "Designation": fields.String(description="Libellé de l'article", example="Stylo"),
     "Poids": fields.String(description="Poids unitaire de l'article en kg", example="0.02"),
     "NbreDePoints": fields.String(description="Nombre de points auquel équivaut l'article", example="10"),
 }
 
 article_model = api.model("Article", model_data)
-article_payload = api.model("Article", {k: v for k, v in model_data.copy().items()})
+article_payload = api.model("Article Payload", {k: v for k, v in model_data.items() if k not in ["CodeArticle"]})
 
 @api.doc(params={"article_id": "ID de l'article concerné"}, model=article_model)
 class ArticleResource(Resource):
@@ -26,7 +26,7 @@ class ArticleResource(Resource):
         return self.article_schema.dump(article)
 
     # PUT
-    @api.expect(article_model)
+    @api.expect(article_payload)
     def put(self, article_id):
         try:
             new_article_data = self.article_schema.load(request.json)
@@ -43,7 +43,7 @@ class ArticleResource(Resource):
         return self.article_schema.dump(article)
 
     #PATCH
-    #@api.expect(article_payload)
+    @api.expect(article_payload)
     def patch(self, article_id):
         try:
             new_article_data = self.article_schema.load(request.json, partial=True)
@@ -76,6 +76,7 @@ class ArticleListResource(Resource):
         return self.article_schema.dump(all_articles, many=True)
 
     # POST
+    @api.expect(article_payload)
     def post(self):
         try:
             new_articles_data = self.article_schema.load(request.json)
