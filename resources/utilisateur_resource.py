@@ -23,75 +23,76 @@ class UtilisateurResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
     # GET
-    @api.doc(description="Récupèrer un utilisateur par son ID", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
+    @api.doc(description="Récupèrer un utilisateur par son ID", responses={404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de l'utilisateur n'a pas été renseigné"})
     def get(self, utilisateur_id=None):
-        utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
+        utilisateur = Utilisateur.query.get_or_404(utilisateur_id)
         return self.utilisateur_schema.dump(utilisateur)
 
     # PUT
     @api.expect(utilisateur_payload)
-    @api.doc(description="Modifier un utilisateur existant", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
-    def put(self,utilisateur_id):
+    @api.doc(description="Modifier un utilisateur existant", responses={400: "Erreur de validation des données", 404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de l'utilisateur n'a pas été renseigné"})
+    def put(self, utilisateur_id):
         try:
-            new_utilisateur_data=self.utilisateur_schema.load(request.json)
+            new_utilisateur_data = self.utilisateur_schema.load(request.json)
         except ValidationError as err:
-            return {"message":"Validation Error", "errors":err.messages},400
+            return {"message": "Validation Error", "errors": err.messages}, 400
 
-        utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
+        utilisateur = Utilisateur.query.get_or_404(utilisateur_id)
 
         for key, value in new_utilisateur_data.items():
             if value is not None:
-                setattr(utilisateur,key,value)
+                setattr(utilisateur, key, value)
 
         db.session.commit()
         return self.utilisateur_schema.dump(utilisateur)
 
-    #PATCH
+    # PATCH
     @api.expect(utilisateur_payload)
-    @api.doc(description="Modifier les attributs d'un utilisateur existant", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
-    def patch(self,utilisateur_id):
+    @api.doc(description="Modifier les attributs d'un utilisateur existant", responses={400: "Erreur de validation des données", 404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de l'utilisateur n'a pas été renseigné"})
+    def patch(self, utilisateur_id):
         try:
             new_utilisateur_data = self.utilisateur_schema.load(request.json, partial=True)
         except ValidationError as err:
             return {"message": "Validation Error", "errors": err.messages}, 400
 
-        utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
+        utilisateur = Utilisateur.query.get_or_404(utilisateur_id)
 
         for key, value in new_utilisateur_data.items():
             if value is not None:
-                setattr(utilisateur, key,value)
+                setattr(utilisateur, key, value)
 
         db.session.commit()
         return self.utilisateur_schema.dump(utilisateur)
 
     # DELETE
-    @api.doc(description="Supprimer un utilisateur", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
-    def delete(self,utilisateur_id):
-        utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
-        utilisateur.Statut=False
+    @api.doc(description="Supprimer un utilisateur", responses={404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de l'utilisateur n'a pas été renseigné"})
+    def delete(self, utilisateur_id):
+        utilisateur = Utilisateur.query.get_or_404(utilisateur_id)
+        utilisateur.Statut = False
         db.session.commit()
         return self.utilisateur_schema.dump(utilisateur)
-
 
 @api.doc(model=utilisateur_model)
 class UtilisateurListResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
     # GET
-    @api.marshal_with(fields=utilisateur_model, as_list=True)
-    @api.doc(description="Récuperer la liste de tous les utilisateurs")
+    @api.marshal_with(utilisateur_model, as_list=True)
+    @api.doc(description="Récupérer la liste de tous les utilisateurs", responses={404: "Aucun utilisateur trouvé"})
     def get(self):
         all_utilisateurs = Utilisateur.query.all()
+        if not all_utilisateurs:
+            return {"message": "Aucun utilisateur trouvé"}, 404
         return self.utilisateur_schema.dump(all_utilisateurs, many=True)
 
     # POST
     @api.expect(utilisateur_payload)
-    @api.doc(description="Ajouter un nouvel utilisateur")
+    @api.doc(description="Ajouter un nouvel utilisateur", responses={400: "Erreur de validation des données"})
     def post(self):
         try:
-            new_utilisateur_data=self.utilisateur_schema.load(request.json)
+            new_utilisateur_data = self.utilisateur_schema.load(request.json)
         except ValidationError as err:
-            return {"message": "Validation Error", "errors": err.messages},400
+            return {"message": "Validation Error", "errors": err.messages}, 400
 
         new_utilisateur = Utilisateur(
             nom_utilisateur=new_utilisateur_data["nom_utilisateur"],
