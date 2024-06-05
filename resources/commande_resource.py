@@ -22,12 +22,14 @@ class CommandeResource(Resource):
     commande_schema = CommandeSchema()
 
     # GET
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def get(self, commande_id):
         commande = Commande.query.get_or_404(commande_id)
         return self.commande_schema.dump(commande)
     
    
     # PUT
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def put(self, commande_id):
         try:
             new_commande_data = self.commande_schema.load(request.json)
@@ -44,6 +46,7 @@ class CommandeResource(Resource):
         return self.commande_schema.dump(commande)
     
       # PATCH
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def patch(self, commande_id):
         try:
             new_commande_data = self.commande_schema.load(request.json, partial=True)
@@ -60,6 +63,7 @@ class CommandeResource(Resource):
         return self.commande_schema.dump(commande)
     
     # DELETE
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def delete(self, commande_id):
         commande = Commande.query.get_or_404(commande_id)
         commande.Statut = False

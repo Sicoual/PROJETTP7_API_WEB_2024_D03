@@ -8,11 +8,11 @@ from globals import api
 
 utilisateur_model = api.model("Utilisateur", {
     "code_utilisateur": fields.Integer(description="ID de l'utilisateur"),
-    "nom_utilisateur": fields.Integer(description="Nom de famille de l'utilisateur", required=True),
-    "prenom_utilisateur": fields.Date(description="Prénom de l'utilisateur", required=True),
-    "username": fields.Float(description="Pseudonyme de l'utilisateur", required=True),
+    "nom_utilisateur": fields.String(description="Nom de famille de l'utilisateur", required=True),
+    "prenom_utilisateur": fields.String(description="Prénom de l'utilisateur", required=True),
+    "username": fields.String(description="Pseudonyme de l'utilisateur", required=True),
     "couleur_fond_utilisateur": fields.Integer(description=""),
-    "date_insc_utilisateur": fields.Integer(description="Date d'inscription de l'utilisateur"),
+    "date_insc_utilisateur": fields.Date(description="Date d'inscription de l'utilisateur"),
 })
 
 @api.doc(params={"utilisateur_id": "ID de l'utilisateur concerné"}, model=utilisateur_model)
