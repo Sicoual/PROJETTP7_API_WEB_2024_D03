@@ -35,7 +35,8 @@ class CommandeResource(Resource):
 
     commande_schema = CommandeSchema()
 
-    @api.doc(description="Récupèrer une commande par son ID", responses={405: "L'ID de la commande n'a pas été renseigné"})
+    @api.doc(description="Récupérer une commande par son ID",
+             responses={404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de la commande n'a pas été renseigné"})
     def get(self, commande_id):
         """
         Récupère une commande par son ID.
@@ -49,9 +50,9 @@ class CommandeResource(Resource):
         commande = Commande.query.get_or_404(commande_id)
         return self.commande_schema.dump(commande)
 
-
     @api.expect(commande_payload)
-    @api.doc(description="Modifier une commande existante", responses={405: "L'ID de la commande n'a pas été renseigné"})
+    @api.doc(description="Modifier une commande existante",
+             responses={400: "Erreur de validation des données", 404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de la commande n'a pas été renseigné"})
     def put(self, commande_id):
         """
         Met à jour une commande existante.
@@ -76,8 +77,10 @@ class CommandeResource(Resource):
         db.session.commit()
         return self.commande_schema.dump(commande)
 
+    # PATCH
     @api.expect(commande_payload)
-    @api.doc(description="Modifier les attributs d'une commande existante", responses={405: "L'ID de la commande n'a pas été renseigné"})
+    @api.doc(description="Modifier les attributs d'une commande existante",
+             responses={400: "Erreur de validation des données", 404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de la commande n'a pas été renseigné"})
     def patch(self, commande_id):
         """
         Met à jour partiellement une commande existante.
@@ -102,7 +105,8 @@ class CommandeResource(Resource):
         db.session.commit()
         return self.commande_schema.dump(commande)
 
-    @api.doc(description="Supprimer une commande", responses={405: "L'ID de la commande n'a pas été renseigné"})
+    @api.doc(description="Supprimer une commande",
+             responses={404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de la commande n'a pas été renseigné"})
     def delete(self, commande_id):
         """
         Désactive une commande en mettant son statut à False.
@@ -118,7 +122,6 @@ class CommandeResource(Resource):
         db.session.commit()
         return self.commande_schema.dump(commande)
 
-
 """
 Ressource Flask-RESTx pour gérer la collection de commandes.
 
@@ -130,8 +133,9 @@ Méthodes :
 class CommandeListResource(Resource):
     commande_schema = CommandeSchema()
 
-    @api.marshal_with(fields=commande_model, as_list=True)
-    @api.doc(description="Récuperer la liste de toutes les commandes")
+    @api.marshal_with(commande_model, as_list=True)
+    @api.doc(description="Récupérer la liste de toutes les commandes",
+             responses={404: "Aucune commande trouvée"})
     def get(self):
         """
         Récupère toutes les commandes.
@@ -140,10 +144,13 @@ class CommandeListResource(Resource):
             list : Liste des commandes.
         """
         all_commandes = Commande.query.all()
+        if not all_commandes:
+            return {"message": "Aucune commande trouvée"}, 404
         return self.commande_schema.dump(all_commandes, many=True)
 
     @api.expect(commande_payload)
-    @api.doc(description="Ajouter une nouvelle commande")
+    @api.doc(description="Ajouter une nouvelle commande",
+             responses={400: "Erreur de validation des données"})
     def post(self):
         """
         Crée une nouvelle commande.

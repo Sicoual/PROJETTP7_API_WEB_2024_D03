@@ -33,7 +33,8 @@ Méthodes :
 class ClientResource(Resource):
     client_schema = ClientSchema()
    
-    @api.doc(description="Récupèrer un client par son ID", responses={405: "L'ID du client n'a pas été renseigné"})
+    @api.doc(description="Récupérer un client par son ID",
+             responses={404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID du client n'a pas été renseigné"})
     def get(self, client_id):
         """
         Récupère un client par son ID.
@@ -48,7 +49,10 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     @api.expect(client_payload)
-    @api.doc(description="Modifier un client existant", responses={405: "L'ID du client n'a pas été renseigné"})
+    @api.doc(description="Modifier un client existant",
+             responses={400: "Erreur de validation des données", 
+                        404: "L'ID renseigné n'existe pas en base de données", 
+                        405: "L'ID du client n'a pas été renseigné"})
     def put(self, client_id):
         """
         Met à jour un client existant.
@@ -75,7 +79,10 @@ class ClientResource(Resource):
 
     # PATCH
     @api.expect(client_payload)
-    @api.doc(description="Modifier les attributs d'un client existant", responses={405: "L'ID du client n'a pas été renseigné"})
+    @api.doc(description="Modifier les attributs d'un client existant",
+             responses={400: "Erreur de validation des données", 
+                        404: "L'ID renseigné n'existe pas en base de données", 
+                        405: "L'ID du client n'a pas été renseigné"})
     def patch(self, client_id):
         """
         Met à jour partiellement un client existant.
@@ -101,7 +108,8 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     # DELETE
-    @api.doc(description="Supprimer un client", responses={405: "L'ID du client n'a pas été renseigné"})
+    @api.doc(description="Supprimer un client",
+             responses={404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID du client n'a pas été renseigné"})
     def delete(self, client_id):
         """
         Désactive un client en mettant son statut à False.
@@ -128,8 +136,9 @@ Méthodes :
 class ClientListResource(Resource):
     client_schema = ClientSchema()
 
-    @api.marshal_with(fields=client_model, as_list=True)
-    @api.doc(description="Récuperer la liste de tous les clients")
+    @api.marshal_with(client_model, as_list=True)
+    @api.doc(description="Récupérer la liste de tous les clients",
+             responses={404: "Aucun client trouvé"})
     def get(self):
         """
         Récupère tous les clients.
@@ -138,10 +147,13 @@ class ClientListResource(Resource):
             list : Liste des clients.
         """
         all_clients = Client.query.all()
+        if not all_clients:
+            return {"message": "Aucun client trouvé"}, 404
         return self.client_schema.dump(all_clients, many=True)
 
     @api.expect(client_payload)
-    @api.doc(description="Ajouter un nouvel client")
+    @api.doc(description="Ajouter un nouveau client",
+             responses={400: "Erreur de validation des données"})
     def post(self):
         """
         Crée un nouveau client.

@@ -30,7 +30,9 @@ Méthodes :
 class ArticleResource(Resource):
     article_schema = ArticleSchema()
 
-    @api.doc(description="Récupèrer un article par son ID", responses={405: "L'ID de l'article n'a pas été renseigné"})
+    # Get
+    @api.doc(description="Récupérer un article par son ID",
+             responses={404: "L'ID renseigné n'existe pas en base de données", 405: "L'ID de l'article n'a pas été renseigné"})
     def get(self, article_id):
         """
         Récupère un article par son ID.
@@ -45,7 +47,10 @@ class ArticleResource(Resource):
         return self.article_schema.dump(article)
 
     @api.expect(article_payload)
-    @api.doc(description="Modifier un article existant", responses={405: "L'ID de l'article n'a pas été renseigné"})
+    @api.doc(description="Modifier un article existant", 
+             responses={400: "Erreur de validation des données", 
+             404: "L'ID renseigné n'existe pas en base de données", 
+             405: "L'ID de l'article n'a pas été renseigné"})
     def put(self, article_id):
         """
         Met à jour un article existant.
@@ -70,9 +75,12 @@ class ArticleResource(Resource):
         db.session.commit()
         return self.article_schema.dump(article)
 
-    #PATCH
+    # PATCH
     @api.expect(article_payload)
-    @api.doc(description="Modifier les attributs d'un article existant", responses={405: "L'ID de l'article n'a pas été renseigné"})
+    @api.doc(description="Modifier les attributs d'un article existant", 
+             responses={400: "Erreur de validation des données", 
+                404: "L'ID renseigné n'existe pas en base de données", 
+                405: "L'ID de l'article n'a pas été renseigné"})
     def patch(self, article_id):
         """
         Met à jour partiellement un article existant.
@@ -97,7 +105,10 @@ class ArticleResource(Resource):
         db.session.commit()
         return self.article_schema.dump(article)
 
-    @api.doc(description="Supprimer un article", responses={405: "L'ID de l'article n'a pas été renseigné"})
+    # DELETE
+    @api.doc(description="Supprimer un article", 
+             responses={404: "L'ID renseigné n'existe pas en base de données", 
+                        405: "L'ID de l'article n'a pas été renseigné"})
     def delete(self, article_id):
         """
         Désactive un article en mettant son statut à False.
@@ -124,8 +135,10 @@ Méthodes :
 class ArticleListResource(Resource):
     article_schema = ArticleSchema()
 
-    @api.marshal_with(fields=article_model, as_list=True)
-    @api.doc(description="Récuperer la liste de tous les articles")
+    # Get
+    @api.marshal_with(article_model, as_list=True)
+    @api.doc(description="Récupérer la liste de tous les articles",
+             responses={404: "Aucun article trouvé"})
     def get(self):
         """
         Récupère tous les articles.
@@ -134,10 +147,13 @@ class ArticleListResource(Resource):
             list : Liste des articles.
         """
         all_articles = Article.query.all()
+        if not all_articles:
+            return {"message": "Aucun article trouvé"}, 404
         return self.article_schema.dump(all_articles, many=True)
 
     @api.expect(article_payload)
-    @api.doc(description="Ajouter un nouvel article")
+    @api.doc(description="Ajouter un nouvel article", 
+             responses={400: "Erreur de validation des données"})
     def post(self):
         """
         Crée un nouvel article.
