@@ -8,11 +8,11 @@ from globals import api
 
 model_data = {
     "code_utilisateur": fields.Integer(description="ID de l'utilisateur", example=1),
-    "nom_utilisateur": fields.Integer(description="Nom de famille de l'utilisateur", required=True),
-    "prenom_utilisateur": fields.Date(description="Prénom de l'utilisateur", required=True),
-    "username": fields.Float(description="Pseudonyme de l'utilisateur", required=True),
+    "nom_utilisateur": fields.String(description="Nom de famille de l'utilisateur", required=True),
+    "prenom_utilisateur": fields.String(description="Prénom de l'utilisateur", required=True),
+    "username": fields.String(description="Pseudonyme de l'utilisateur", required=True),
     "couleur_fond_utilisateur": fields.Integer(description=""),
-    "date_insc_utilisateur": fields.Integer(description="Date d'inscription de l'utilisateur"),
+    "date_insc_utilisateur": fields.Date(description="Date d'inscription de l'utilisateur"),
 }
 
 utilisateur_model = api.model("Utilisateur", model_data)
@@ -23,14 +23,14 @@ class UtilisateurResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
     # GET
-    @api.doc(description="Récupèrer un utilisateur par son ID")
+    @api.doc(description="Récupèrer un utilisateur par son ID", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
     def get(self, utilisateur_id=None):
         utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
         return self.utilisateur_schema.dump(utilisateur)
 
     # PUT
     @api.expect(utilisateur_payload)
-    @api.doc(description="Modifier un utilisateur existant")
+    @api.doc(description="Modifier un utilisateur existant", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
     def put(self,utilisateur_id):
         try:
             new_utilisateur_data=self.utilisateur_schema.load(request.json)
@@ -48,7 +48,7 @@ class UtilisateurResource(Resource):
 
     #PATCH
     @api.expect(utilisateur_payload)
-    @api.doc(description="Modifier les attributs d'un utilisateur existant")
+    @api.doc(description="Modifier les attributs d'un utilisateur existant", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
     def patch(self,utilisateur_id):
         try:
             new_utilisateur_data = self.utilisateur_schema.load(request.json, partial=True)
@@ -65,7 +65,7 @@ class UtilisateurResource(Resource):
         return self.utilisateur_schema.dump(utilisateur)
 
     # DELETE
-    @api.doc(description="Supprimer un utilisateur")
+    @api.doc(description="Supprimer un utilisateur", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
     def delete(self,utilisateur_id):
         utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
         utilisateur.Statut=False

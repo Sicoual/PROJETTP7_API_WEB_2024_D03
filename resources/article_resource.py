@@ -21,14 +21,14 @@ class ArticleResource(Resource):
     article_schema = ArticleSchema()
 
     #Get
-    @api.doc(description="Récupèrer un article par son ID")
+    @api.doc(description="Récupèrer un article par son ID", responses={405: "L'ID de l'article n'a pas été renseigné"})
     def get(self, article_id):
         article = Article.query.get_or_404(article_id)
         return self.article_schema.dump(article)
 
     # PUT
     @api.expect(article_payload)
-    @api.doc(description="Modifier un article existant")
+    @api.doc(description="Modifier un article existant", responses={405: "L'ID de l'article n'a pas été renseigné"})
     def put(self, article_id):
         try:
             new_article_data = self.article_schema.load(request.json)
@@ -46,7 +46,7 @@ class ArticleResource(Resource):
 
     #PATCH
     @api.expect(article_payload)
-    @api.doc(description="Modifier les attributs d'un article existant")
+    @api.doc(description="Modifier les attributs d'un article existant", responses={405: "L'ID de l'article n'a pas été renseigné"})
     def patch(self, article_id):
         try:
             new_article_data = self.article_schema.load(request.json, partial=True)
@@ -62,7 +62,7 @@ class ArticleResource(Resource):
         db.session.commit()
         return self.article_schema.dump(article)
     # DELETE
-    @api.doc(description="Supprimer un article")
+    @api.doc(description="Supprimer un article", responses={405: "L'ID de l'article n'a pas été renseigné"})
     def delete(self,article_id):
         article=Article.query.get_or_404(article_id)
         article.Statut=False
