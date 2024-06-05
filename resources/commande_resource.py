@@ -8,15 +8,18 @@ from schemas.commande_schema import CommandeSchema
 from globals import api
 
 # Definition of the Commande model for the API documentation
-commande_model = api.model("Commande", {
-    "NumCde": fields.Integer(description="ID de la commande"),
-    "CodeClient": fields.Integer(description="ID du client associé à la commande", required=True),
+model_data = {
+    "NumCde": fields.Integer(description="ID de la commande", example=1),
+    "CodeClient": fields.Integer(description="ID de la commande associé à la commande", required=True),
     "DateCde": fields.Date(description="Date de création de la commande", required=True),
     "MtTotal": fields.Float(description="Montant total de la commande en EUR", required=True),
     "CodeOperateur": fields.Integer(description="Code de l'opérateur associé à la commande"),
     "NSuivi": fields.Integer(description="Numéro de suivi de la commande"),
     "DateExpedition": fields.Date(description="Date d'expédition de la commande"),
-})
+}
+
+commande_model = api.model("Commande", model_data)
+commande_payload = api.model("Commande Payload", {k: v for k, v in model_data.items() if k not in ["NumCde"]})
 
 """
 Ressource Flask-RESTx pour gérer une commande individuelle.
@@ -32,6 +35,7 @@ class CommandeResource(Resource):
 
     commande_schema = CommandeSchema()
 
+    @api.doc(description="Récupèrer une commande par son ID", responses={405: "L'ID de la commande n'a pas été renseigné"})
     def get(self, commande_id):
         """
         Récupère une commande par son ID.
@@ -44,7 +48,10 @@ class CommandeResource(Resource):
         """
         commande = Commande.query.get_or_404(commande_id)
         return self.commande_schema.dump(commande)
-    
+
+
+    @api.expect(commande_payload)
+    @api.doc(description="Modifier une commande existante", responses={405: "L'ID de la commande n'a pas été renseigné"})
     def put(self, commande_id):
         """
         Met à jour une commande existante.
@@ -68,7 +75,9 @@ class CommandeResource(Resource):
 
         db.session.commit()
         return self.commande_schema.dump(commande)
-    
+
+    @api.expect(commande_payload)
+    @api.doc(description="Modifier les attributs d'une commande existante", responses={405: "L'ID de la commande n'a pas été renseigné"})
     def patch(self, commande_id):
         """
         Met à jour partiellement une commande existante.
@@ -92,7 +101,8 @@ class CommandeResource(Resource):
 
         db.session.commit()
         return self.commande_schema.dump(commande)
-    
+
+    @api.doc(description="Supprimer une commande", responses={405: "L'ID de la commande n'a pas été renseigné"})
     def delete(self, commande_id):
         """
         Désactive une commande en mettant son statut à False.
@@ -121,6 +131,7 @@ class CommandeListResource(Resource):
     commande_schema = CommandeSchema()
 
     @api.marshal_with(fields=commande_model, as_list=True)
+    @api.doc(description="Récuperer la liste de toutes les commandes")
     def get(self):
         """
         Récupère toutes les commandes.
@@ -131,7 +142,8 @@ class CommandeListResource(Resource):
         all_commandes = Commande.query.all()
         return self.commande_schema.dump(all_commandes, many=True)
 
-    @api.doc(model=commande_model)
+    @api.expect(commande_payload)
+    @api.doc(description="Ajouter une nouvelle commande")
     def post(self):
         """
         Crée une nouvelle commande.

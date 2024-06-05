@@ -8,7 +8,7 @@ from globals import api
 
 # Définition du modèle Article pour la documentation de l'API
 model_data = {
-    "CodeArticle": fields.Integer(description="ID de l'article"),
+    "CodeArticle": fields.Integer(description="ID de l'article", example=1),
     "Designation": fields.String(description="Libellé de l'article", example="Stylo"),
     "Poids": fields.String(description="Poids unitaire de l'article en kg", example="0.02"),
     "NbreDePoints": fields.String(description="Nombre de points auquel équivaut l'article", example="10"),
@@ -30,6 +30,7 @@ Méthodes :
 class ArticleResource(Resource):
     article_schema = ArticleSchema()
 
+    @api.doc(description="Récupèrer un article par son ID", responses={405: "L'ID de l'article n'a pas été renseigné"})
     def get(self, article_id):
         """
         Récupère un article par son ID.
@@ -43,7 +44,8 @@ class ArticleResource(Resource):
         article = Article.query.get_or_404(article_id)
         return self.article_schema.dump(article)
 
-    @api.expect(article_model)
+    @api.expect(article_payload)
+    @api.doc(description="Modifier un article existant", responses={405: "L'ID de l'article n'a pas été renseigné"})
     def put(self, article_id):
         """
         Met à jour un article existant.
@@ -68,6 +70,9 @@ class ArticleResource(Resource):
         db.session.commit()
         return self.article_schema.dump(article)
 
+    #PATCH
+    @api.expect(article_payload)
+    @api.doc(description="Modifier les attributs d'un article existant", responses={405: "L'ID de l'article n'a pas été renseigné"})
     def patch(self, article_id):
         """
         Met à jour partiellement un article existant.
@@ -92,6 +97,7 @@ class ArticleResource(Resource):
         db.session.commit()
         return self.article_schema.dump(article)
 
+    @api.doc(description="Supprimer un article", responses={405: "L'ID de l'article n'a pas été renseigné"})
     def delete(self, article_id):
         """
         Désactive un article en mettant son statut à False.
@@ -119,6 +125,7 @@ class ArticleListResource(Resource):
     article_schema = ArticleSchema()
 
     @api.marshal_with(fields=article_model, as_list=True)
+    @api.doc(description="Récuperer la liste de tous les articles")
     def get(self):
         """
         Récupère tous les articles.
@@ -129,6 +136,8 @@ class ArticleListResource(Resource):
         all_articles = Article.query.all()
         return self.article_schema.dump(all_articles, many=True)
 
+    @api.expect(article_payload)
+    @api.doc(description="Ajouter un nouvel article")
     def post(self):
         """
         Crée un nouvel article.

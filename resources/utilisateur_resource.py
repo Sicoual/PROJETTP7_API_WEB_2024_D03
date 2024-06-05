@@ -6,14 +6,17 @@ from database import db
 from schemas.utilisateur_schema import UtilisateurSchema
 from globals import api
 
-utilisateur_model = api.model("Utilisateur", {
-    "code_utilisateur": fields.Integer(description="ID de l'utilisateur"),
+model_data = {
+    "code_utilisateur": fields.Integer(description="ID de l'utilisateur", example=1),
     "nom_utilisateur": fields.String(description="Nom de famille de l'utilisateur", required=True),
     "prenom_utilisateur": fields.String(description="Prénom de l'utilisateur", required=True),
     "username": fields.String(description="Pseudonyme de l'utilisateur", required=True),
-    "couleur_fond_utilisateur": fields.String(description=""),
+    "couleur_fond_utilisateur": fields.Integer(description=""),
     "date_insc_utilisateur": fields.Date(description="Date d'inscription de l'utilisateur"),
-})
+}
+
+utilisateur_model = api.model("Utilisateur", model_data)
+utilisateur_payload = api.model("Utilisateur Payload", {k: v for k, v in model_data.items() if k not in ["code_utilisateur"]})
 
 
 """
@@ -29,6 +32,7 @@ Méthodes :
 class UtilisateurResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
+    @api.doc(description="Récupèrer un utilisateur par son ID", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
     def get(self, utilisateur_id=None):
         """
         Récupère un utilisateur par son ID.
@@ -42,6 +46,8 @@ class UtilisateurResource(Resource):
         utilisateur = Utilisateur.query.get_or_404(utilisateur_id)
         return self.utilisateur_schema.dump(utilisateur)
 
+    @api.expect(utilisateur_payload)
+    @api.doc(description="Modifier un utilisateur existant", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
     def put(self, utilisateur_id):
         """
         Met à jour un utilisateur existant.
@@ -66,6 +72,8 @@ class UtilisateurResource(Resource):
         db.session.commit()
         return self.utilisateur_schema.dump(utilisateur)
 
+    @api.expect(utilisateur_payload)
+    @api.doc(description="Modifier les attributs d'un utilisateur existant", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
     def patch(self, utilisateur_id):
         """
         Met à jour partiellement un utilisateur existant.
@@ -90,7 +98,8 @@ class UtilisateurResource(Resource):
         db.session.commit()
         return self.utilisateur_schema.dump(utilisateur)
 
-    def delete(self, utilisateur_id):
+    @api.doc(description="Supprimer un utilisateur", responses={405: "L'ID de l'utilisateur n'a pas été renseigné"})
+    def delete(self,utilisateur_id):
         """
         Désactive un utilisateur en mettant son statut à False.
 
@@ -118,6 +127,7 @@ class UtilisateurListResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
     @api.marshal_with(fields=utilisateur_model, as_list=True)
+    @api.doc(description="Récuperer la liste de tous les utilisateurs")
     def get(self):
         """
         Récupère tous les utilisateurs.
@@ -128,6 +138,8 @@ class UtilisateurListResource(Resource):
         all_utilisateurs = Utilisateur.query.all()
         return self.utilisateur_schema.dump(all_utilisateurs, many=True)
 
+    @api.expect(utilisateur_payload)
+    @api.doc(description="Ajouter un nouvel utilisateur")
     def post(self):
         """
         Crée un nouvel utilisateur.
