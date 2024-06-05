@@ -24,12 +24,14 @@ class ClientResource(Resource):
     client_schema = ClientSchema()
 
     # GET
+    @api.doc(description="Récupèrer un client par son ID")
     def get(self, client_id):
         client = Client.query.get_or_404(client_id)
         return self.client_schema.dump(client)
 
     # PUT
     @api.expect(client_payload)
+    @api.doc(description="Modifier un client existant")
     def put(self, client_id):
         try:
             new_client_data=self.client_schema.load(request.json)
@@ -47,6 +49,7 @@ class ClientResource(Resource):
 
     #PATCH
     @api.expect(client_payload)
+    @api.doc(description="Modifier les attributs d'un client existant")
     def patch(self,client_id):
         try:
             new_client_data = self.client_schema.load(request.json, partial=True)
@@ -63,6 +66,7 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     # DELETE
+    @api.doc(description="Supprimer un client")
     def delete(self,client_id):
         client=Client.query.get_or_404(client_id)
         client.Statut=False
@@ -75,12 +79,14 @@ class ClientListResource(Resource):
 
     # GET
     @api.marshal_with(fields=client_model, as_list=True)
+    @api.doc(description="Récuperer la liste de tous les clients")
     def get(self):
         all_clients=Client.query.all()
         return self.client_schema.dump(all_clients, many=True)
 
     # POST
     @api.expect(client_payload)
+    @api.doc(description="Ajouter un nouvel client")
     def post(self):
         try:
             new_client_data = self.client_schema.load(request.json)

@@ -23,12 +23,14 @@ class UtilisateurResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
     # GET
+    @api.doc(description="Récupèrer un utilisateur par son ID")
     def get(self, utilisateur_id=None):
         utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
         return self.utilisateur_schema.dump(utilisateur)
 
     # PUT
     @api.expect(utilisateur_payload)
+    @api.doc(description="Modifier un utilisateur existant")
     def put(self,utilisateur_id):
         try:
             new_utilisateur_data=self.utilisateur_schema.load(request.json)
@@ -46,6 +48,7 @@ class UtilisateurResource(Resource):
 
     #PATCH
     @api.expect(utilisateur_payload)
+    @api.doc(description="Modifier les attributs d'un utilisateur existant")
     def patch(self,utilisateur_id):
         try:
             new_utilisateur_data = self.utilisateur_schema.load(request.json, partial=True)
@@ -62,6 +65,7 @@ class UtilisateurResource(Resource):
         return self.utilisateur_schema.dump(utilisateur)
 
     # DELETE
+    @api.doc(description="Supprimer un utilisateur")
     def delete(self,utilisateur_id):
         utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
         utilisateur.Statut=False
@@ -75,12 +79,14 @@ class UtilisateurListResource(Resource):
 
     # GET
     @api.marshal_with(fields=utilisateur_model, as_list=True)
+    @api.doc(description="Récuperer la liste de tous les utilisateurs")
     def get(self):
         all_utilisateurs = Utilisateur.query.all()
         return self.utilisateur_schema.dump(all_utilisateurs, many=True)
 
     # POST
     @api.expect(utilisateur_payload)
+    @api.doc(description="Ajouter un nouvel utilisateur")
     def post(self):
         try:
             new_utilisateur_data=self.utilisateur_schema.load(request.json)

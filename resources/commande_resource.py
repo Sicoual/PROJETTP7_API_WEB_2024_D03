@@ -25,6 +25,7 @@ class CommandeResource(Resource):
     commande_schema = CommandeSchema()
 
     # GET
+    @api.doc(description="Récupèrer une commande par son ID")
     def get(self, commande_id):
         commande = Commande.query.get_or_404(commande_id)
         return self.commande_schema.dump(commande)
@@ -32,6 +33,7 @@ class CommandeResource(Resource):
 
     # PUT
     @api.expect(commande_payload)
+    @api.doc(description="Modifier une commande existante")
     def put(self, commande_id):
         try:
             new_commande_data = self.commande_schema.load(request.json)
@@ -49,6 +51,7 @@ class CommandeResource(Resource):
 
       # PATCH
     @api.expect(commande_payload)
+    @api.doc(description="Modifier les attributs d'une commande existante")
     def patch(self, commande_id):
         try:
             new_commande_data = self.commande_schema.load(request.json, partial=True)
@@ -65,6 +68,7 @@ class CommandeResource(Resource):
         return self.commande_schema.dump(commande)
 
     # DELETE
+    @api.doc(description="Supprimer une commande")
     def delete(self, commande_id):
         commande = Commande.query.get_or_404(commande_id)
         commande.Statut = False
@@ -78,12 +82,14 @@ class CommandeListResource(Resource):
 
     # GET
     @api.marshal_with(fields=commande_model, as_list=True)
+    @api.doc(description="Récuperer la liste de toutes les commandes")
     def get(self):
         all_commandes = Commande.query.all()
         return self.commande_schema.dump(all_commandes, many=True)
 
     # POST
     @api.expect(commande_payload)
+    @api.doc(description="Ajouter une nouvelle commande")
     def post(self):
         try:
             new_commande_data = self.commande_schema.load(request.json)
