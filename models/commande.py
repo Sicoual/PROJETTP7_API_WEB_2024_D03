@@ -1,4 +1,5 @@
 from sqlalchemy import (
+	Boolean,
 	Column,
 	Integer,
 	String,
@@ -7,7 +8,6 @@ from sqlalchemy import (
 	Float,
 )
 from database import db
-
 
 class Commande(db.Model):
 	__tablename__ = "commande"
@@ -19,3 +19,4 @@ class Commande(db.Model):
 	CodeOperateur = Column(Integer)
 	NSuivi = Column(String(50), default=None)
 	DateExpedition = Column(Date)
+	Statut=Column(Boolean,default=True)

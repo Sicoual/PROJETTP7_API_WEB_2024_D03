@@ -1,15 +1,12 @@
 from sqlalchemy import (
+	Boolean,
 	Column,
 	Integer,
-	String,
-	Date,
 	ForeignKey,
 	Numeric,
 	Float,
 )
 from database import db
-
-
 
 class CommandeArticle(db.Model):
 	__tablename__ = "commande_article"
@@ -20,4 +17,4 @@ class CommandeArticle(db.Model):
 	CodeModele = Column(Integer)
 	Poids = Column(Numeric, default=0.0000)
 	MontantAffranchissement = Column(Float, default=0.0000)
-
+	Statut=Column(Boolean,default=True)

@@ -2,8 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase
 from os import environ
-# connexion a la base de donnée et déclaration de la base avec sql alchemy
 
+# connexion a la base de donnée et déclaration de la base avec sql alchemy
 user = environ.get("DB_USER")
 password = environ.get("DB_PASSWORD")
 port = environ.get("DB_PORT")
