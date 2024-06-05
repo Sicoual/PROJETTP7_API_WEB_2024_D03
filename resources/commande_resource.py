@@ -1,3 +1,4 @@
+from functools import partial
 from flask import request
 from flask_restx import Resource, fields
 from marshmallow import ValidationError
@@ -22,6 +23,46 @@ class CommandeResource(Resource):
     # GET
     def get(self, commande_id):
         commande = Commande.query.get_or_404(commande_id)
+        return self.commande_schema.dump(commande)
+    
+   
+    # PUT
+    def put(self, commande_id):
+        try:
+            new_commande_data = self.commande_schema.load(request.json)
+        except ValidationError as err:
+            return {"message": "Validation Error", "errors": err.messages}, 400
+
+        commande = Commande.query.get_or_404(commande_id)
+
+        for key, value in new_commande_data.items():
+            if value is not None:
+                setattr(commande, key, value)
+
+        db.session.commit()
+        return self.commande_schema.dump(commande)
+    
+      # PATCH
+    def patch(self, commande_id):
+        try:
+            new_commande_data = self.commande_schema.load(request.json, partial=True)
+        except ValidationError as err:
+            return {"message": "Validation Error", "errors": err.messages}, 400
+
+        commande = Commande.query.get_or_404(commande_id)
+
+        for key, value in new_commande_data.items():
+            if value is not None:
+                setattr(commande, key, value)
+
+        db.session.commit()
+        return self.commande_schema.dump(commande)
+    
+    # DELETE
+    def delete(self, commande_id):
+        commande = Commande.query.get_or_404(commande_id)
+        commande.Statut = False
+        db.session.commit()
         return self.commande_schema.dump(commande)
 
 
@@ -53,3 +94,4 @@ class CommandeListResource(Resource):
         db.session.add(new_commande)
         db.session.commit()
         return self.commande_schema.dump(new_commande)
+ 
