@@ -19,48 +19,52 @@ client_model = api.model("Client", {
 @api.doc(params={"client_id": "ID du client concerné"})
 class ClientResource(Resource):
     client_schema = ClientSchema()
-
+   
     # GET
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def get(self, client_id):
         client = Client.query.get_or_404(client_id)
         return self.client_schema.dump(client)
 
     # PUT
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def put(self, client_id):
         try:
-            new_client_data=self.client_schema.load(request.json)
+            new_client_data = self.client_schema.load(request.json)
         except ValidationError as err:
             return {"message": "Validation Error", "errors": err.messages}, 400
 
-        client=Client.query.get_or_404(client_id)
+        client = Client.query.get_or_404(client_id)
 
         for key, value in new_client_data.items():
             if value is not None:
-                setattr(client,key,value)
+                setattr(client, key, value)
 
         db.session.commit()
         return self.client_schema.dump(client)
 
-    #PATCH
-    def patch(self,client_id):
+    # PATCH
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
+    def patch(self, client_id):
         try:
             new_client_data = self.client_schema.load(request.json, partial=True)
         except ValidationError as err:
-            return {"message":"Validation Error", "errors":err.messages},400
+            return {"message": "Validation Error", "errors": err.messages}, 400
 
-        client=Client.query.get_or_404(client_id)
+        client = Client.query.get_or_404(client_id)
 
         for key, value in new_client_data.items():
             if value is not None:
-                setattr(client,key,value)
+                setattr(client, key, value)
 
         db.session.commit()
         return self.client_schema.dump(client)
 
     # DELETE
-    def delete(self,client_id):
-        client=Client.query.get_or_404(client_id)
-        client.Statut=False
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
+    def delete(self, client_id):
+        client = Client.query.get_or_404(client_id)
+        client.Statut = False
         db.session.commit()
         return self.client_schema.dump(client)
 
@@ -68,10 +72,11 @@ class ClientResource(Resource):
 class ClientListResource(Resource):
     client_schema = ClientSchema()
 
-    # GET
+    # GET    
     @api.marshal_with(fields=client_model, as_list=True)
+
     def get(self):
-        all_clients=Client.query.all()
+        all_clients = Client.query.all()
         return self.client_schema.dump(all_clients, many=True)
 
     # POST
@@ -81,7 +86,7 @@ class ClientListResource(Resource):
         except ValidationError as err:
             return {"message": "Validation Error", "errors": err.messages}, 400
 
-        new_client=Client(
+        new_client = Client(
             Nom=new_client_data["Nom"],
             Prenom=new_client_data["Prenom"],
             Adresse=new_client_data["Adresse"],
@@ -93,3 +98,4 @@ class ClientListResource(Resource):
         db.session.add(new_client)
         db.session.commit()
         return self.client_schema.dump(new_client)
+

@@ -8,11 +8,11 @@ from globals import api
 
 utilisateur_model = api.model("Utilisateur", {
     "code_utilisateur": fields.Integer(description="ID de l'utilisateur"),
-    "nom_utilisateur": fields.Integer(description="Nom de famille de l'utilisateur", required=True),
-    "prenom_utilisateur": fields.Date(description="Prénom de l'utilisateur", required=True),
-    "username": fields.Float(description="Pseudonyme de l'utilisateur", required=True),
+    "nom_utilisateur": fields.String(description="Nom de famille de l'utilisateur", required=True),
+    "prenom_utilisateur": fields.String(description="Prénom de l'utilisateur", required=True),
+    "username": fields.String(description="Pseudonyme de l'utilisateur", required=True),
     "couleur_fond_utilisateur": fields.Integer(description=""),
-    "date_insc_utilisateur": fields.Integer(description="Date d'inscription de l'utilisateur"),
+    "date_insc_utilisateur": fields.Date(description="Date d'inscription de l'utilisateur"),
 })
 
 @api.doc(params={"utilisateur_id": "ID de l'utilisateur concerné"}, model=utilisateur_model)
@@ -20,11 +20,13 @@ class UtilisateurResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
     # GET
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def get(self, utilisateur_id=None):
         utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
         return self.utilisateur_schema.dump(utilisateur)
 
     # PUT
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def put(self,utilisateur_id):
         try:
             new_utilisateur_data=self.utilisateur_schema.load(request.json)
@@ -41,6 +43,7 @@ class UtilisateurResource(Resource):
         return self.utilisateur_schema.dump(utilisateur)
 
     #PATCH
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def patch(self,utilisateur_id):
         try:
             new_utilisateur_data = self.utilisateur_schema.load(request.json, partial=True)
@@ -57,6 +60,7 @@ class UtilisateurResource(Resource):
         return self.utilisateur_schema.dump(utilisateur)
     
     # DELETE
+    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
     def delete(self,utilisateur_id):
         utilisateur=Utilisateur.query.get_or_404(utilisateur_id)
         utilisateur.Statut=False
