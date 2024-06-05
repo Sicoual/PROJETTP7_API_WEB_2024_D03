@@ -14,6 +14,7 @@ from globals import app, api, ma
 
 # BDD
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URL
+app.config["RESTX_MASK_SWAGGER"] = False
 db.init_app(app)
 
 # Mashmallow

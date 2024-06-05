@@ -16,17 +16,16 @@ client_model = api.model("Client", {
     "Genre": fields.String(description="Homme/Femme", enum=["Homme", "Femme"]),
 })
 
+@api.doc(params={"client_id": "ID du client concerné"})
 class ClientResource(Resource):
     client_schema = ClientSchema()
 
     # GET
-    @api.doc(params={"client_id": "Code du client à afficher"})
     def get(self, client_id):
         client = Client.query.get_or_404(client_id)
         return self.client_schema.dump(client)
 
     # PUT
-    @api.doc(params={"client_id": "Code du client à modifier"})
     def put(self, client_id):
         try:
             new_client_data=self.client_schema.load(request.json)
@@ -43,7 +42,6 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     #PATCH
-    @api.doc(params={"client_id": "Code du client à modifier"})
     def patch(self,client_id):
         try:
             new_client_data = self.client_schema.load(request.json, partial=True)
@@ -60,24 +58,23 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     # DELETE
-    @api.doc(params={"client_id": "Code du client à supprimer"})
     def delete(self,client_id):
         client=Client.query.get_or_404(client_id)
         client.Statut=False
         db.session.commit()
         return self.client_schema.dump(client)
 
-
+@api.doc(model=client_model)
 class ClientListResource(Resource):
     client_schema = ClientSchema()
 
     # GET
+    @api.marshal_with(fields=client_model, as_list=True)
     def get(self):
         all_clients=Client.query.all()
         return self.client_schema.dump(all_clients, many=True)
 
     # POST
-    @api.doc(model=client_model)
     def post(self):
         try:
             new_client_data = self.client_schema.load(request.json)

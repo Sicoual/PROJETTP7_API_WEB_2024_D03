@@ -17,6 +17,7 @@ commande_model = api.model("Commande", {
     "DateExpedition": fields.Date(description="Date d'expédition de la commande"),
 })
 
+@api.doc(params={"commande_id": "ID de la commande concernée"}, model=commande_model)
 class CommandeResource(Resource):
     commande_schema = CommandeSchema()
 
@@ -66,10 +67,12 @@ class CommandeResource(Resource):
         return self.commande_schema.dump(commande)
 
 
+@api.doc(model=commande_model)
 class CommandeListResource(Resource):
     commande_schema = CommandeSchema()
 
     # GET
+    @api.marshal_with(fields=commande_model, as_list=True)
     def get(self):
         all_commandes = Commande.query.all()
         return self.commande_schema.dump(all_commandes, many=True)
