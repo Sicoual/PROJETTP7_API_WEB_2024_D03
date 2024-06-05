@@ -3,14 +3,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase
 from os import environ
 
-# connexion a la base de donnée et déclaration de la base avec sql alchemy
+# Récupération des informations de connexion à partir des variables d'environnement
 user = environ.get("DB_USER")
 password = environ.get("DB_PASSWORD")
 port = environ.get("DB_PORT")
 database = environ.get("DB_DATABASE_NAME")
 host = environ.get("DB_HOST")
 
-# url de connexion de la base
+# URL de connexion à la base de données
 SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{0}:{1}@{2}:{3}/{4}".format(
     user,
     password,
@@ -18,12 +18,12 @@ SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{0}:{1}@{2}:{3}/{4}".format(
     port,
     database,
 )
-
-# permet de définir les paramètre de connexion à la base
+# Création de l'engine SQLAlchemy avec les paramètres de connexion
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-# déclaration d'une base qui permet après de créer un modele et de mapper avec sql alchemy
+# Déclaration de la base qui permet de créer un modèle et de mapper avec SQLAlchemy
 class Base(DeclarativeBase):
     pass
 
+# Initialisation de l'objet SQLAlchemy avec le modèle de base
 db = SQLAlchemy(model_class=Base)
