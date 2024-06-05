@@ -12,15 +12,15 @@ from resources.client_resource import ClientListResource, ClientResource
 from resources.utilisateur_resource import UtilisateurListResource, UtilisateurResource
 from globals import app, api, ma
 
-# BDD
+# Configuration de la base de données
 app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URL
 app.config["RESTX_MASK_SWAGGER"] = False
 db.init_app(app)
 
-# Mashmallow
+# Initialisation de Marshmallow
 ma.init_app(app)
 
-# API
+# Configuration de l'API
 namespace = Namespace("Client", path="/")
 namespace.add_resource(ClientListResource, "/clients")
 namespace.add_resource(ClientResource, "/clients/<int:client_id>")
@@ -41,6 +41,7 @@ namespace.add_resource(UtilisateurListResource, "/utilisateurs")
 namespace.add_resource(UtilisateurResource, "/utilisateurs/<int:utilisateur_id>")
 api.add_namespace(namespace)
 
+# Création de la base de données et ajout des données de test
 with app.app_context():
     try:
         db.drop_all()
