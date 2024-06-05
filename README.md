@@ -8,6 +8,7 @@ Cette application est une API RESTful construite avec Flask. Elle permet de gér
 
 Le projet est organisé comme suit :
 
+    
     ├── app.py
     ├── database.py
     ├── globals.py
@@ -48,7 +49,21 @@ Assurez-vous d'avoir les éléments suivants installés :
 3. Installez les dépendances :
    pip install -r requirements.txt
 
-# Utilisation
+4. Configurez le fichier .env :
+    Créez un fichier .env à la racine du projet et configurez les variables d'environnement nécessaires, comme par exemple la connexion à votre base de données MySQL.
+
+    Exemple de .env :
+        DB_USER="root"
+        DB_PASSWORD="root"
+        DB_HOST="localhost"
+        DB_PORT="3306"
+        DB_DATABASE_NAME="base_name"
+
+5. Configurez la base de données MySQL :
+    Assurez-vous d'avoir une base de données MySQL configurée et accessible selon les informations dans votre fichier .env. 
+    Vous pouvez également modifier les paramètres de la base de données dans ce fichier pour vous adapter à différents environnements ou configurations spécifiques.
+
+## Utilisation
 
 1. Lancement du serveur
    Pour démarrer le serveur Flask, exécutez la commande suivante :
@@ -75,8 +90,6 @@ Voici une liste des exemples pour des endpoints disponibles avec une brève desc
 ## Contribution
 
 Les contributions sont les bienvenues ! Veuillez soumettre une pull request ou ouvrir une issue pour discuter des changements que vous souhaitez apporter.
-
-
 
 ## Auteurs
 
