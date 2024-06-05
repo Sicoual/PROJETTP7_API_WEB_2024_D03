@@ -39,8 +39,8 @@ Assurez-vous d'avoir les éléments suivants installés :
 ## Installation
 
 1. Clonez le dépôt :
-   git clone https://github.com/votre-utilisateur/votre-repo.git
-   cd votre-repo
+   git clone git@github.com:Sicoual/PROJETTP7_API_WEB_2024_D03.git
+   cd PROJETTP7_API_WEB_2024_D03.git
 
 2. Créez un environnement virtuel et activez-le :
    python -m venv env
