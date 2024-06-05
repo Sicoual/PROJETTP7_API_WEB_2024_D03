@@ -6,28 +6,32 @@ from schemas.client_schema import ClientSchema
 from models.client import Client
 from globals import api
 
-client_model = api.model("Client", {
-    "CodeCli": fields.Integer(description="ID du client"),
+model_data = {
+    "CodeCli": fields.Integer(description="ID du client", example=1),
     "Nom": fields.String(description="Nom du client", example="Dupont", required=True),
     "Prenom": fields.String(description="Prénom du client", example="Jean", required=True),
     "Email": fields.String(description="Adresse mail du client", example="jean.dupont@example.com", required=True),
     "Adresse": fields.String(description="Adresse principale du client", example="123 Rue de Paris"),
     "IdCodePostal": fields.Integer(description="Code Postal de l'adresse du client", example="75000"),
     "Genre": fields.String(description="Homme/Femme", enum=["Homme", "Femme"]),
-})
+}
 
-@api.doc(params={"client_id": "ID du client concerné"})
+client_model = api.model("Client", model_data)
+client_payload = api.model("Client Payload", {k: v for k, v in model_data.items() if k not in ["CodeCli"]})
+
+@api.doc(params={"client_id": "ID du client concerné"}, model=client_model)
 class ClientResource(Resource):
     client_schema = ClientSchema()
    
     # GET
-    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
+    @api.doc(description="Récupèrer un client par son ID", responses={405: "L'ID du client n'a pas été renseigné"})
     def get(self, client_id):
         client = Client.query.get_or_404(client_id)
         return self.client_schema.dump(client)
 
     # PUT
-    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
+    @api.expect(client_payload)
+    @api.doc(description="Modifier un client existant", responses={405: "L'ID du client n'a pas été renseigné"})
     def put(self, client_id):
         try:
             new_client_data = self.client_schema.load(request.json)
@@ -44,7 +48,8 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     # PATCH
-    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
+    @api.expect(client_payload)
+    @api.doc(description="Modifier les attributs d'un client existant", responses={405: "L'ID du client n'a pas été renseigné"})
     def patch(self, client_id):
         try:
             new_client_data = self.client_schema.load(request.json, partial=True)
@@ -61,7 +66,7 @@ class ClientResource(Resource):
         return self.client_schema.dump(client)
 
     # DELETE
-    @api.doc(responses={405: "L'ID du client n'a pas été renseigné"})
+    @api.doc(description="Supprimer un client", responses={405: "L'ID du client n'a pas été renseigné"})
     def delete(self, client_id):
         client = Client.query.get_or_404(client_id)
         client.Statut = False
@@ -74,12 +79,14 @@ class ClientListResource(Resource):
 
     # GET    
     @api.marshal_with(fields=client_model, as_list=True)
-
+    @api.doc(description="Récuperer la liste de tous les clients")
     def get(self):
         all_clients = Client.query.all()
         return self.client_schema.dump(all_clients, many=True)
 
     # POST
+    @api.expect(client_payload)
+    @api.doc(description="Ajouter un nouvel client")
     def post(self):
         try:
             new_client_data = self.client_schema.load(request.json)
@@ -98,4 +105,3 @@ class ClientListResource(Resource):
         db.session.add(new_client)
         db.session.commit()
         return self.client_schema.dump(new_client)
-
