@@ -61,7 +61,7 @@ Assurez-vous d'avoir les éléments suivants installés :
 
 5. Configurez la base de données MySQL :
     Assurez-vous d'avoir une base de données MySQL configurée et accessible selon les informations dans votre fichier .env. 
-    Vous pouvez également modifier les paramètres de la base de données dans ce fichier pour vous adapter à différents environnements ou configurations spécifiques.
+    
 
 ## Utilisation
 
