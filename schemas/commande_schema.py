@@ -5,4 +5,4 @@ class CommandeSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Commande()
         include_fk = True
-        exclude = ("Statut",)
+        #exclude = ("Statut",)
