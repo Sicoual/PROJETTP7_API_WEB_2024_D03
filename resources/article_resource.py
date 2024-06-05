@@ -6,13 +6,17 @@ from models.article import Article
 from schemas.article_schema import ArticleSchema
 from globals import api
 
-article_model = api.model("Article", {
-    "CodeCli": fields.Integer(description="ID de l'article"),
-    "Designation": fields.String(description="Libellé de l'article", example="Stylo", required=True),
+model_data = {
+    "CodeArticle": fields.Integer(description="ID de l'article"),
+    "Designation": fields.String(description="Libellé de l'article", example="Stylo"),
     "Poids": fields.String(description="Poids unitaire de l'article en kg", example="0.02"),
     "NbreDePoints": fields.String(description="Nombre de points auquel équivaut l'article", example="10"),
-})
+}
 
+article_model = api.model("Article", model_data)
+article_payload = api.model("Article", {k: v for k, v in model_data.copy().items()})
+
+@api.doc(params={"article_id": "ID de l'article concerné"}, model=article_model)
 class ArticleResource(Resource):
     article_schema = ArticleSchema()
 
@@ -22,6 +26,7 @@ class ArticleResource(Resource):
         return self.article_schema.dump(article)
 
     # PUT
+    @api.expect(article_model)
     def put(self, article_id):
         try:
             new_article_data = self.article_schema.load(request.json)
@@ -38,6 +43,7 @@ class ArticleResource(Resource):
         return self.article_schema.dump(article)
 
     #PATCH
+    #@api.expect(article_payload)
     def patch(self, article_id):
         try:
             new_article_data = self.article_schema.load(request.json, partial=True)
@@ -59,17 +65,17 @@ class ArticleResource(Resource):
         db.session.commit()
         return self.article_schema.dump(article)
 
-
+@api.doc(model=article_model)
 class ArticleListResource(Resource):
     article_schema = ArticleSchema()
 
     #Get
+    @api.marshal_with(fields=article_model, as_list=True)
     def get(self):
         all_articles = Article.query.all()
         return self.article_schema.dump(all_articles, many=True)
 
     # POST
-    @api.doc(model=article_model)
     def post(self):
         try:
             new_articles_data = self.article_schema.load(request.json)

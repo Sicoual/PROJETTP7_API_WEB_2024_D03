@@ -15,6 +15,7 @@ utilisateur_model = api.model("Utilisateur", {
     "date_insc_utilisateur": fields.Integer(description="Date d'inscription de l'utilisateur"),
 })
 
+@api.doc(params={"utilisateur_id": "ID de l'utilisateur concerné"}, model=utilisateur_model)
 class UtilisateurResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
@@ -63,16 +64,17 @@ class UtilisateurResource(Resource):
         return self.utilisateur_schema.dump(utilisateur)
 
 
+@api.doc(model=utilisateur_model)
 class UtilisateurListResource(Resource):
     utilisateur_schema = UtilisateurSchema()
 
     # GET
+    @api.marshal_with(fields=utilisateur_model, as_list=True)
     def get(self):
         all_utilisateurs = Utilisateur.query.all()
         return self.utilisateur_schema.dump(all_utilisateurs, many=True)
 
     # POST
-    @api.doc(model=utilisateur_model)
     def post(self):
         try:
             new_utilisateur_data=self.utilisateur_schema.load(request.json)
