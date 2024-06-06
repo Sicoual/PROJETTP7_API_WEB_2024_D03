@@ -2,7 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase
 from os import environ
+from dotenv import load_dotenv
 
+load_dotenv()
 # Récupération des informations de connexion à partir des variables d'environnement
 user = environ.get("DB_USER")
 password = environ.get("DB_PASSWORD")
